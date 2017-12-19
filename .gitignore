@@ -29,6 +29,8 @@
 *.dylib
 
 # Executables
+ft_nm
+ft_otool
 *.exe
 *.out
 *.app
