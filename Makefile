@@ -1,6 +1,5 @@
 NAME         = ft_nm ft_otool
-CC     		?= clang
-CFLAGS       = -g -Wall -Wextra
+CFLAGS      += -g -Wall -Wextra
 CFLAGS      += -std=c11 -pedantic -pedantic-errors
 
 ifeq ($(DEBUG),yes)
@@ -46,7 +45,8 @@ $(NAME): %:$(OBJ_PATH)/%.o $(COM_OBJECTS) | $(LIBFT)
 	$(CC) $(LDFLAGS) -o $@ $^
 
 $(LIBFT):
-	$(MAKE) -C $(LIBFT_PATH)
+	@$(MAKE) -q -C $(LIBFT_PATH) || echo $(MAKE) -C $(LIBFT_PATH) && \
+		$(MAKE) -C $(LIBFT_PATH)
 
 $(OBJECTS): $(OBJ_PATH)/%.o: %.c | $(OBJ_PATH)
 	$(CC) $(CFLAGS) -o $@ -c $<
