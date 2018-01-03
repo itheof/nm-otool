@@ -34,9 +34,12 @@ LIBFT      = $(LIBFT_PATH)/libft.a
 CFLAGS    += -I $(LIBFT_PATH)/inc
 LDFLAGS   += -L $(LIBFT_PATH) -lft
 
-TEST_SRC = 00_test_facile.c 01_test_moins_facile.c
+TEST_C = 00_test_facile.c 01_test_moins_facile.c
+TEST_H = x06_random.xxd
 TEST_DIR = test
-TESTS    = $(TEST_SRC:%.c=$(TEST_DIR)/%)
+EXEC_C = $(TEST_C:%.c=$(TEST_DIR)/%.out) 
+EXEC_H = $(TEST_H:%.xxd=$(TEST_DIR)/%.out)
+TESTS    = $(EXEC_C) $(EXEC_H)
 
 .SECONDARY: $(OBJECTS)
 
@@ -60,8 +63,11 @@ $(DEP_PATH)/%.d: %.c | $(DEP_PATH)
 $(BUILD_DIR):
 	mkdir -p $@
 
-$(TESTS): %:%.c
+$(EXEC_C): %.out:%.c
 	$(CC) -o $@ $<
+
+$(EXEC_H): %.out:%.xxd
+	cat $< | cut '-d#' -f1 | xxd -r -p > $@ && chmod 755 $@
 
 check: $(NAME) $(TESTS)
 	./run_tests.sh
