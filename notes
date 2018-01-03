@@ -11,3 +11,5 @@ https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/
 
 /usr/include/mach-o/loader.h
 /usr/include/mach-o/nlist.h
+
+mach_o_parse_sym_table

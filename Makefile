@@ -34,6 +34,9 @@ LIBFT      = $(LIBFT_PATH)/libft.a
 CFLAGS    += -I $(LIBFT_PATH)/inc
 LDFLAGS   += -L $(LIBFT_PATH) -lft
 
+TEST_SRC = 00_test_facile.c 01_test_moins_facile.c
+TEST_DIR = test
+TESTS    = $(TEST_SRC:%.c=$(TEST_DIR)/%)
 
 .SECONDARY: $(OBJECTS)
 
@@ -57,11 +60,14 @@ $(DEP_PATH)/%.d: %.c | $(DEP_PATH)
 $(BUILD_DIR):
 	mkdir -p $@
 
-check: $(NAME)
+$(TESTS): %:%.c
+	$(CC) -o $@ $<
+
+check: $(NAME) $(TESTS)
 	./run_tests.sh
 
 clean:
-	$(RM) -rf $(OBJ_PATH) $(DEP_PATH)
+	$(RM) -rf $(OBJ_PATH) $(DEP_PATH) $(TESTS)
 	$(MAKE) -C $(LIBFT_PATH) clean
 
 fclean: clean

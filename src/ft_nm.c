@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/01/02 22:07:12 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/01/02 22:16:39 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,16 @@ static t_bool	parse_opt(int ac, char const *av[], t_opt *opt, t_env *env)
 
 	OPT_INIT(*opt);
 	opt->opterr = 2;
-	while ((ch = ft_getopt(ac, av, "", opt)) != -1)
+	while ((ch = ft_getopt(ac, av, "APvefoxgut:", opt)) != -1)
 	{
-		if (ft_strchr("APVefoxgut", ch))
+		if (ft_strchr("APvefoxgut", ch))
 		{
-			(void)env;
+			ft_putchar(ch);
+			ft_putchar(' ');
+			if (ch == 't')
+				ft_putendl(opt->optarg);
+			else
+				ft_putchar(10);
 		}
 		else
 		{
