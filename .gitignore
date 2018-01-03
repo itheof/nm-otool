@@ -31,6 +31,8 @@
 # Executables
 ft_nm
 ft_otool
+test/00_test_facile
+test/01_test_moins_facile
 *.exe
 *.out
 *.app
