@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/01/02 22:16:39 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/01/24 17:17:31 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,9 @@ static t_bool	parse_opt(int ac, char const *av[], t_opt *opt, t_env *env)
 
 static t_bool	ft_nm(const char *name, t_bool show_file)
 {
+	t_mapping map;
+
+	if (!map_file())
 	ft_putendl(name);
 	return (true);
 }
@@ -79,5 +82,5 @@ int						main(int ac, char const *av[])
 	}
 	else
 		success &= ft_nm(av[0], false);
-	return ((success) ? 0 : 1);
+	return ((success == true) ? 0 : 1);
 }

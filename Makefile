@@ -47,7 +47,7 @@ all: $(DEPS) $(NAME)
 
 -include $(DEPS)
 
-$(NAME): %:$(OBJ_PATH)/%.o $(COM_OBJECTS) | $(LIBFT)
+$(NAME): %:$(OBJ_PATH)/%.o $(COM_OBJECTS) $(LIBFT)
 	$(CC) $(LDFLAGS) -o $@ $^
 
 $(LIBFT):
