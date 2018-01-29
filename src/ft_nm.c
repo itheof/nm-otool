@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/01/29 14:37:32 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/01/29 16:53:19 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,15 @@ static t_bool	ft_nm(const char *path, t_bool show_path, t_env env)
 
 	if (!map_file(path, &map, env.name))
 		return (false);
-	ft_putendl(path);
-	unmap_file(map);
+	/*
+	** Parse file here
+	*/
+	if (show_path)
+		print_path(map.path);
+	/*
+	** Print output here
+	*/
+	unmap_file(&map);
 	return (true);
 }
 

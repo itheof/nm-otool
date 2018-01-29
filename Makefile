@@ -3,9 +3,9 @@ CFLAGS      += -g -Wall -Wextra
 CFLAGS      += -std=c11 -pedantic -pedantic-errors
 
 ifeq ($(DEBUG),yes)
-	CFLAGS  += -g3 -O0 -fno-inline
+	CFLAGS  += -g3 -O0 -fno-inline -DNOT_CORRECTION
 else
-	CFLAGS  += -O2 -DNDEBUG
+	CFLAGS  += -O2
 endif
 ifeq ($(SAN),yes)
 	CFLAGS	+= -fsanitize=address

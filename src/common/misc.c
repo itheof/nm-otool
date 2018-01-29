@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/29 13:50:26 by tvallee           #+#    #+#             */
-/*   Updated: 2018/01/29 13:51:14 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/01/29 16:48:51 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,11 @@ void	ft_perror(char const *name)
 	}
 	ft_strcat(buf, "strerror not allowed\n");
 	ft_putendl_fd(buf, 2);
+}
+
+void	print_path(char const *path)
+{
+	ft_putchar(10);
+	ft_putstr(path);
+	ft_putendl(":");
 }

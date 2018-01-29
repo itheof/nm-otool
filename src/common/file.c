@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:10:50 by tvallee           #+#    #+#             */
-/*   Updated: 2018/01/29 13:55:04 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/01/29 16:40:28 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,8 @@ t_bool			map_file(const char *path, t_mapping *map, const char *name)
 
 void	unmap_file(t_mapping *map)
 {
-	return ;
+	if (!map->_mallocd)
+	{
+		munmap(map->addr, map->size);
+	}
 }
