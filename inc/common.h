@@ -1,38 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   misc.c                                             :+:      :+:    :+:   */
+/*   common.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/03 17:10:50 by tvallee           #+#    #+#             */
-/*   Updated: 2018/01/04 16:00:40 by tvallee          ###   ########.fr       */
+/*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
+/*   Updated: 2018/01/29 13:52:51 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "misc.h"
+#ifndef COMMON_H
+# define COMMON_H
 
-void	ft_perror(char const *name)
+# include "libft/stdbool.h"
+
+# ifdef NOT_CORRECTION
+#  include <stdio.h>
+#  define PERROR(x) perror(x)
+# else
+#  define PERROR(x) ft_perror(x)
+# endif
+
+typedef struct	s_mapping
 {
-	char buf[64];
+	size_t		size;
+	void		*addr;
+	const char	*path;
+	t_bool		_mallocd;
+}				t_mapping;
 
-	*buf = 0;
-	ft_strcat(name);
-	ft_strcat(": ");
-	ft_strcat("strerror not allowed\n");
-	ft_putendl_fd(buf, stderr);
-}
+t_bool	map_file(const char *path, t_mapping *map, const char *name);
 
-t_bool	map_file(int fd, t_mapping *map)
-{
-	struct stat	buf;
-
-	if (fstat(fd, &buf) < 0)
-	{
-		PERROR("fstat");
-		return (false);
-	}
-	map->size = buf.st_size;
-	map->
-	if (pe)
-}
+#endif

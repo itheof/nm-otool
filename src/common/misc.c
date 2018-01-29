@@ -1,34 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   misc.h                                             :+:      :+:    :+:   */
+/*   misc.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/01/04 15:49:30 by tvallee          ###   ########.fr       */
+/*   Created: 2018/01/29 13:50:26 by tvallee           #+#    #+#             */
+/*   Updated: 2018/01/29 13:51:14 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MISC_H
-# define MISC_H
+#include "libft/print.h"
+#include "libft/string.h"
 
-# include "libft/stdbool.h"
-
-# ifdef NOT_CORRECTION
-#  include <stdio.h>
-#  define PERROR(x) perror(x)
-# else
-#  define PERROR(x) ft_perror(x)
-# endif
-
-typedef struct	s_mapping
+void	ft_perror(char const *name)
 {
-	size_t		size;
-	void		*addr;
-	size_t		_map_size;
-}				t_mapping;
+	char buf[64];
 
-t_bool	map_file(int fd, t_mapping *map);
-
-#endif
+	if (!ft_strcmp(name, ""))
+	{
+		ft_strcat(buf, name);
+		ft_strcat(buf, ": ");
+	}
+	ft_strcat(buf, "strerror not allowed\n");
+	ft_putendl_fd(buf, 2);
+}
