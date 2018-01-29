@@ -26,9 +26,10 @@ vpath %.c $(SRC_PATH) $(addprefix $(SRC_PATH)/,$(SRC_SUBDIR))
 OBJ_PATH    = .obj
 COM_OBJECTS = $(COM_SOURCES:%.c=$(OBJ_PATH)/%.o)
 OBJECTS     = $(SOURCES:%.c=$(OBJ_PATH)/%.o)
-DEP_PATH    = .dep
+DEP_PATH    = .dep/
 DEPS        = $(SOURCES:%.c=$(DEP_PATH)/%.d)
-BUILD_DIR   = $(OBJ_PATH) $(DEP_PATH)
+BUILD_DIR   = $(OBJ_PATH) $(OBJ_PATH)/common \
+			  $(DEP_PATH)/common $(DEP_PATH)
 
 # Libft
 LIBFT_PATH = libft
@@ -56,10 +57,10 @@ $(LIBFT):
 	@$(MAKE) -q -C $(LIBFT_PATH) || echo $(MAKE) -C $(LIBFT_PATH) && \
 		$(MAKE) -C $(LIBFT_PATH)
 
-$(OBJECTS): $(OBJ_PATH)/%.o: %.c | $(OBJ_PATH)
+$(OBJECTS): $(OBJ_PATH)/%.o: %.c | $(OBJ_PATH)/common
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-$(DEP_PATH)/%.d: %.c | $(DEP_PATH)
+$(DEP_PATH)/%.d: %.c | $(DEP_PATH)/common
 	$(CC) $(CFLAGS) -MM $< -MT $(OBJ_PATH)/$*.o -MF $@
 
 $(BUILD_DIR):
@@ -84,4 +85,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all $(LIBFT) clean fclean re check
+.PHONY: all clean fclean re check

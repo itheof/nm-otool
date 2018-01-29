@@ -6,13 +6,13 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/01/29 13:31:06 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/01/29 14:37:32 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "ft_nm.h"
-#include "misc.h"
+#include "common.h"
 
 static t_bool	parse_opt(int ac, char const *av[], t_opt *opt, t_env *env)
 {
