@@ -6,10 +6,11 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/01/29 16:53:19 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/12 15:51:36 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <mach-o/fat.h>
 #include "libft.h"
 #include "ft_nm.h"
 #include "common.h"
@@ -19,6 +20,7 @@ static t_bool	parse_opt(int ac, char const *av[], t_opt *opt, t_env *env)
 	int		ch;
 
 	env->name = av[0];
+	ft_puterr(env->name, NULL);
 	OPT_INIT(*opt);
 	opt->opterr = 2;
 	if ((ch = ft_getopt(ac, av, "", opt)) != -1)
@@ -31,22 +33,47 @@ static t_bool	parse_opt(int ac, char const *av[], t_opt *opt, t_env *env)
 	return (true);
 }
 
+/*
+static void		process_arch(void *addr)
+{
+}*/
+
 static t_bool	ft_nm(const char *path, t_bool show_path, t_env env)
 {
-	t_mapping map;
+	struct fat_header		*fat;
+	struct mach_header_64	*mach;
+	t_mapping				map;
+	t_bool					success;
 
-	if (!map_file(path, &map, env.name))
-		return (false);
+	success = true;
+	if (map_file(path, &map, env.name) && check_header(map, &fat, &mach))
+	{
 	/*
-	** Parse file here
-	*/
-	if (show_path)
-		print_path(map.path);
-	/*
-	** Print output here
-	*/
-	unmap_file(&map);
-	return (true);
+		if (!fat_get_default_arch(map, &addr))
+			return (false);
+		if (addr == NULL)
+		{
+			while (true)
+			{
+				if (!fat_get_next_arch(map, &addr))
+				{
+					success = false;
+					break;
+				}
+				if (addr == NULL)
+					break;
+				success &= process_arch(addr);
+			}
+			fat_get_next_arch(map, NULL);
+		}
+		else
+			success &= process_arch(addr);*/
+	}
+	else
+		success = false;
+	unmap_file(&map, env.name);
+	ft_putchar_fd('\n', 2);
+	return (success);
 }
 
 int						main(int ac, char const *av[])

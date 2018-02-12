@@ -2,7 +2,9 @@
 
 set -e
 
-TEST_PATH="$( pwd )/test"
+TEST_PATH="./test"
+xc_path="\/Applications\/Xcode.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/bin\/"
+DIFF="colordiff"
 
 log () {
 	>&2 python <<- EOF
@@ -23,7 +25,7 @@ assert () {
 }
 
 compare () { # 1: Ref binary 2: Test binary 3+: Options
-	files=$(find "${TEST_PATH}" -not -name "*.c" -not -type d)
+	files=$(find "${TEST_PATH}" -not -name "*.c" -not -name "*.xxd" -not -type d)
 	for file in $files;
 	do
 		log Running \`"$1" $3 "$file"\`
@@ -37,7 +39,11 @@ compare () { # 1: Ref binary 2: Test binary 3+: Options
 			> "${TEST_PATH}/test_out.log" \
 			2> "${TEST_PATH}/test_err.log" \
 			&& ret_test=$? || ret_test=$?
-		diff "${TEST_PATH}"/{ref,test}_out.log
+
+		perl -p -i -e "s/$xc_path/.\/ft_/g" "${TEST_PATH}"/ref_out.log
+		perl -p -i -e "s/$xc_path/.\/ft_/g" "${TEST_PATH}"/ref_err.log
+		${DIFF} "${TEST_PATH}"/{ref,test}_out.log || ( log STDOUT DIFF FAILED && false)
+		${DIFF} "${TEST_PATH}"/{ref,test}_err.log || ( log STDERR DIFF FAILED && false)
 		assert $ret_ref $ret_test
 		cleanup
 	done
@@ -45,6 +51,6 @@ compare () { # 1: Ref binary 2: Test binary 3+: Options
 
 trap cleanup EXIT
 compare nm ./ft_nm
-compare otool ./ft_otool -t
+#compare otool ./ft_otool -t
 
 log All tests passed.

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:10:50 by tvallee           #+#    #+#             */
-/*   Updated: 2018/01/29 16:40:28 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/12 16:05:02 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,48 @@ static int		get_fd(const char *path, t_mapping *map, const char *name)
 static t_bool	map_regular_file(struct stat buf, t_mapping *map, int fd,
 		const char *name)
 {
+	char	*tmp;
+	char	*tmp_bis;
+
 	map->size = buf.st_size;
 	map->addr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
 	if (map->addr == MAP_FAILED)
 	{
+		ft_putstr_fd(name, 2);
+		ft_putstr_fd(": ", 2);
 		PERROR("mmap");
 		return (false);
 	}
 	map->_mallocd = false;
+	map->_prefix = NULL;
+	if ((tmp = ft_strjoin(name, ": ")) != NULL)
+	{
+		if ((tmp_bis = ft_strjoin(tmp, map->path)) != NULL)
+		{
+			if ((map->_prefix = ft_strjoin(tmp_bis, " ")) != NULL)
+				ft_puterr(map->_prefix, NULL);
+			free(tmp_bis);
+		}
+		free(tmp);
+	}
 	return (true);
 }
 
 static t_bool	map_special_file(struct stat buf, t_mapping *map, int fd,
 		const char *name)
 {
-	ft_putendl_fd("non-regular file mapping not implemented", 2);
+	char	*tmp;
+
+	(void)buf;
+	(void)map;
+	(void)fd;
+	(void)name;
+	if ((tmp = ft_strjoin(name, ": non-regular file mapping not implemented: "
+					"read not allowed")) != NULL)
+	{
+		ft_puterr(NULL, tmp);
+		free(tmp);
+	}
 	return (false);
 }
 
@@ -81,10 +108,15 @@ t_bool			map_file(const char *path, t_mapping *map, const char *name)
 	}
 }
 
-void	unmap_file(t_mapping *map)
+void	unmap_file(t_mapping *map, char const *name)
 {
 	if (!map->_mallocd)
 	{
+		if (map->_prefix != NULL)
+		{
+			ft_puterr(name, NULL);
+			free(map->_prefix);
+		}
 		munmap(map->addr, map->size);
 	}
 }

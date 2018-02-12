@@ -15,7 +15,7 @@ endif
 # Headers
 CFLAGS    += -I./inc
 
-COM_SOURCES = common/misc.c common/file.c
+COM_SOURCES = common/misc.c common/file.c common/fat.c
 
 # Sources
 SRC_PATH    = src
@@ -37,12 +37,13 @@ LIBFT      = $(LIBFT_PATH)/libft.a
 CFLAGS    += -I $(LIBFT_PATH)/inc
 LDFLAGS   += -L $(LIBFT_PATH) -lft
 
-TEST_C = 00_test_facile.c 01_test_moins_facile.c
-TEST_H = x06_random.xxd
+#TEST_C = 00_test_facile.c 01_test_moins_facile.c
+#TEST_H = x06_random.xxd
+TEST_H = 000_parsing_invalid_fat_header.xxd 001_parsing_invalid_fat_header_0_arch.xxd 002_parsing_invalid_fat_header_loads_arch.xxd 003_parsing_invalid_magic_number.xxd 004_parsing_invalid_fat_missing_arch.xxd
 TEST_DIR = test
 EXEC_C = $(TEST_C:%.c=$(TEST_DIR)/%.out) 
 EXEC_H = $(TEST_H:%.xxd=$(TEST_DIR)/%.out)
-TESTS    = $(EXEC_C) $(EXEC_H)
+TESTS    = $(EXEC_C) $(EXEC_H) $(TEST_DIR)/999_no_read_rights.out
 
 .SECONDARY: $(OBJECTS)
 
@@ -72,6 +73,9 @@ $(EXEC_C): %.out:%.c
 $(EXEC_H): %.out:%.xxd
 	cat $< | cut '-d#' -f1 | xxd -r -p > $@ && chmod 755 $@
 
+$(TEST_DIR)/999_no_read_rights.out:
+	touch $@ && chmod 100 $@
+
 check: $(NAME) $(TESTS)
 	./run_tests.sh
 
@@ -80,7 +84,7 @@ clean:
 	$(MAKE) -C $(LIBFT_PATH) clean
 
 fclean: clean
-	$(RM) -rf $(NAME)
+	$(RM) -f $(NAME) $(EXEC_C) $(EXEC_H)
 	$(MAKE) -C $(LIBFT_PATH) fclean
 
 re: fclean all
