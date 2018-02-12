@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/12 15:51:36 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/12 16:26:34 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static t_bool	ft_nm(const char *path, t_bool show_path, t_env env)
 	}
 	else
 		success = false;
-	unmap_file(&map, env.name);
+	unmap_file(&map);
 	ft_putchar_fd('\n', 2);
 	return (success);
 }
@@ -102,5 +102,6 @@ int						main(int ac, char const *av[])
 	}
 	else
 		success &= ft_nm(av[0], false, env);
+	ft_puterr(NULL, NULL);
 	return ((success == true) ? EXIT_SUCCESS : EXIT_FAILURE);
 }

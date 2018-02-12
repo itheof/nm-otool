@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/29 13:50:26 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/12 16:02:09 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/12 16:25:28 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,26 @@ void	ft_perror(char const *name)
 
 void	ft_puterr(char const *prefix, char const *msg)
 {
-	static char const	*p = NULL;
+	static char	*p = NULL;
 
-	if (prefix == NULL)
+	if (prefix != NULL)
 	{
-		ft_putstr_fd(p, 2);
+		free(p);
+		p = ft_strdup(prefix);
+	}
+	else if (msg != NULL)
+	{
+		if (p)
+			ft_putstr_fd(p, 2);
+		else
+			ft_putstr_fd("WARNING IN FT_PUTERR: NO P SET: ", 2);
 		ft_putstr_fd(msg, 2);
 		ft_putchar_fd('\n', 2);
 	}
 	else
 	{
-		p = prefix;
+		free(p);
+		p = NULL;
 	}
 }
 

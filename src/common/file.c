@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:10:50 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/12 16:05:02 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/12 16:25:46 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,13 @@ static t_bool	map_regular_file(struct stat buf, t_mapping *map, int fd,
 		return (false);
 	}
 	map->_mallocd = false;
-	map->_prefix = NULL;
 	if ((tmp = ft_strjoin(name, ": ")) != NULL)
 	{
 		if ((tmp_bis = ft_strjoin(tmp, map->path)) != NULL)
 		{
-			if ((map->_prefix = ft_strjoin(tmp_bis, " ")) != NULL)
-				ft_puterr(map->_prefix, NULL);
+			free(tmp);
+			if ((tmp = ft_strjoin(tmp_bis, " ")) != NULL)
+				ft_puterr(tmp, NULL);
 			free(tmp_bis);
 		}
 		free(tmp);
@@ -72,16 +72,22 @@ static t_bool	map_special_file(struct stat buf, t_mapping *map, int fd,
 		const char *name)
 {
 	char	*tmp;
+	char	*tmp_bis;
 
 	(void)buf;
 	(void)map;
 	(void)fd;
 	(void)name;
-	if ((tmp = ft_strjoin(name, ": non-regular file mapping not implemented: "
-					"read not allowed")) != NULL)
+	if ((tmp_bis = ft_strjoin(": ", map->path)))
 	{
-		ft_puterr(NULL, tmp);
-		free(tmp);
+		if ((tmp = ft_strjoin(tmp_bis,
+						": non-regular file mapping not implemented: "
+						"read not allowed")) != NULL)
+		{
+			ft_puterr(NULL, tmp);
+			free(tmp);
+		}
+		free(tmp_bis);
 	}
 	return (false);
 }
@@ -108,15 +114,10 @@ t_bool			map_file(const char *path, t_mapping *map, const char *name)
 	}
 }
 
-void	unmap_file(t_mapping *map, char const *name)
+void	unmap_file(t_mapping *map)
 {
 	if (!map->_mallocd)
 	{
-		if (map->_prefix != NULL)
-		{
-			ft_puterr(name, NULL);
-			free(map->_prefix);
-		}
 		munmap(map->addr, map->size);
 	}
 }
