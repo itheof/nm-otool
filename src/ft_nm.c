@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/12 16:26:34 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/12 18:01:45 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 
 static t_bool	parse_opt(int ac, char const *av[], t_opt *opt, t_env *env)
 {
-	int		ch;
+	int			ch;
+	t_buffer	buf;
 
 	env->name = av[0];
 	ft_puterr(env->name, NULL);
@@ -25,9 +26,13 @@ static t_bool	parse_opt(int ac, char const *av[], t_opt *opt, t_env *env)
 	opt->opterr = 2;
 	if ((ch = ft_getopt(ac, av, "", opt)) != -1)
 	{
-		ft_putstr_fd("usage: ", 2);
-		ft_putstr_fd(av[0], 2);
-		ft_putendl_fd(" file...", 2);
+		if (buffer_init_with(&buf, "usage: "))
+		{
+			buffer_cat(&buf, av[0]);
+			buffer_cat(&buf, " file...\n");
+			ft_putstr_fd(buf.str, 2);
+			buffer_deinit(&buf);
+		}
 		return (false);
 	}
 	return (true);

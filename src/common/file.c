@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:10:50 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/12 16:25:46 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/12 18:15:39 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <sys/mman.h>
 #include "common.h"
 #include "libft/string.h"
+#include "libft/buffer.h"
 
 static int		get_fd(const char *path, t_mapping *map, const char *name)
 {
@@ -41,8 +42,7 @@ static int		get_fd(const char *path, t_mapping *map, const char *name)
 static t_bool	map_regular_file(struct stat buf, t_mapping *map, int fd,
 		const char *name)
 {
-	char	*tmp;
-	char	*tmp_bis;
+	t_buffer	err;
 
 	map->size = buf.st_size;
 	map->addr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
@@ -54,40 +54,39 @@ static t_bool	map_regular_file(struct stat buf, t_mapping *map, int fd,
 		return (false);
 	}
 	map->_mallocd = false;
-	if ((tmp = ft_strjoin(name, ": ")) != NULL)
+	if (!buffer_init_with(&err, name))
 	{
-		if ((tmp_bis = ft_strjoin(tmp, map->path)) != NULL)
-		{
-			free(tmp);
-			if ((tmp = ft_strjoin(tmp_bis, " ")) != NULL)
-				ft_puterr(tmp, NULL);
-			free(tmp_bis);
-		}
-		free(tmp);
+		PERROR("malloc");
+		return (false);
 	}
-	return (true);
+	if (buffer_cat(&err, ": ") && buffer_cat(&err, map->path) &&
+			buffer_cat(&err, " "))
+	{
+		ft_puterr(err.str, NULL);
+		buffer_deinit(&err);
+		return (true);
+	}
+	else
+		buffer_deinit(&err);
+	return (false);
 }
 
 static t_bool	map_special_file(struct stat buf, t_mapping *map, int fd,
 		const char *name)
 {
-	char	*tmp;
-	char	*tmp_bis;
+	t_buffer	err;
 
 	(void)buf;
 	(void)map;
 	(void)fd;
 	(void)name;
-	if ((tmp_bis = ft_strjoin(": ", map->path)))
+	if (buffer_init_with(&err, ": "))
 	{
-		if ((tmp = ft_strjoin(tmp_bis,
-						": non-regular file mapping not implemented: "
-						"read not allowed")) != NULL)
-		{
-			ft_puterr(NULL, tmp);
-			free(tmp);
-		}
-		free(tmp_bis);
+		buffer_cat(&err, map->path);
+		buffer_cat(&err, ": non-regular file mapping not implemented: "
+						"read not allowed");
+		ft_puterr(NULL, err.str);
+		buffer_deinit(&err);
 	}
 	return (false);
 }
