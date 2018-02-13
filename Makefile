@@ -39,8 +39,8 @@ LDFLAGS   += -L $(LIBFT_PATH) -lft
 
 #TEST_C = 00_test_facile.c 01_test_moins_facile.c
 #TEST_H = x06_random.xxd
-TEST_H = $(wildcard *.xxd)
 TEST_DIR = test
+TEST_H = $(shell find $(TEST_DIR) -name '*.xxd' -exec basename '{}' \;)
 EXEC_C = $(TEST_C:%.c=$(TEST_DIR)/%.out) 
 EXEC_H = $(TEST_H:%.xxd=$(TEST_DIR)/%.out)
 TESTS    = $(EXEC_C) $(EXEC_H) $(TEST_DIR)/999_no_read_rights.out
