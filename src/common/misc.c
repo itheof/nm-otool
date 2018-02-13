@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/29 13:50:26 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/12 16:25:28 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/13 11:37:09 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,21 @@ void	print_path(char const *path)
 
 t_bool	is_large_enough(t_mapping map, void *addr, size_t size)
 {
-	if (map.size < (size_t)((char*)addr - ((char*)map.addr + size)))
+	size_t	offset;
+
+	offset = (char*)addr - (char*)map.addr;
+	if (map.size >= offset + size)
+	{
+/*		printf("%s sized %zu, can hold enough for %zu at offset %zu\n", map.path,
+				map.size, size,
+				(size_t)((char*)addr - ((char*)map.addr)));*/
 		return (true);
+	}
 	else
+	{
+/*		printf("%s sized %zu, can NOT hold enough for %zu at offset %zu",
+				map.path, map.size, size,
+				(size_t)((char*)addr - ((char*)map.addr)));*/
 		return (false);
+	}
 }
