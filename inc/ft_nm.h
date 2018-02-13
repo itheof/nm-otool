@@ -6,12 +6,13 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 19:48:48 by tvallee           #+#    #+#             */
-/*   Updated: 2018/01/29 13:52:57 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/13 09:54:01 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_NM_H
-# define FT_NM_H 
+# define FT_NM_H
+
 typedef struct	s_env
 {
 	const char	*name;

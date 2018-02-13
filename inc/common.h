@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/12 16:26:22 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/13 13:41:44 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 
 # ifdef NOT_CORRECTION
 #  include <stdio.h>
-#  define PERROR(x) perror(x)
+#  include <sys/errno.h>
+#  define PERROR(x) dprintf(2, "%s: %s.\n", x, strerror(errno))
 # else
 #  define PERROR(x) ft_perror(x)
 # endif

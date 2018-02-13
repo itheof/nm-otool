@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/12 18:01:45 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/13 13:44:38 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,6 @@ static t_bool	parse_opt(int ac, char const *av[], t_opt *opt, t_env *env)
 	return (true);
 }
 
-/*
-static void		process_arch(void *addr)
-{
-}*/
-
 static t_bool	ft_nm(const char *path, t_bool show_path, t_env env)
 {
 	struct fat_header		*fat;
@@ -51,37 +46,42 @@ static t_bool	ft_nm(const char *path, t_bool show_path, t_env env)
 	t_bool					success;
 
 	success = true;
-	if (map_file(path, &map, env.name) && check_header(map, &fat, &mach))
+	if (map_file(path, &map, env.name))
 	{
-	/*
-		if (!fat_get_default_arch(map, &addr))
-			return (false);
-		if (addr == NULL)
+		if (check_header(map, &fat, &mach))
 		{
-			while (true)
+		/*
+			if (!fat_get_default_arch(map, &addr))
+				return (false);
+			if (addr == NULL)
 			{
-				if (!fat_get_next_arch(map, &addr))
+				while (true)
 				{
-					success = false;
-					break;
+					if (!fat_get_next_arch(map, &addr))
+					{
+						success = false;
+						break;
+					}
+					if (addr == NULL)
+						break;
+					success &= process_arch(addr);
 				}
-				if (addr == NULL)
-					break;
-				success &= process_arch(addr);
+				fat_get_next_arch(map, NULL);
 			}
-			fat_get_next_arch(map, NULL);
+			else
+				success &= process_arch(addr);*/
 		}
 		else
-			success &= process_arch(addr);*/
+			success = false;
+		ft_putchar_fd('\n', 2);
 	}
 	else
 		success = false;
 	unmap_file(&map);
-	ft_putchar_fd('\n', 2);
 	return (success);
 }
 
-int						main(int ac, char const *av[])
+int				main(int ac, char const *av[])
 {
 	t_env	env;
 	t_opt	opt;
