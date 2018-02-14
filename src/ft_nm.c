@@ -6,35 +6,36 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/13 13:44:38 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/14 12:14:44 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include <mach-o/fat.h>
 #include "libft.h"
 #include "ft_nm.h"
 #include "common.h"
 
-static t_bool	parse_opt(int ac, char const *av[], t_opt *opt, t_env *env)
+static t_bool	parse_opt(int *ac, char const **av[], t_opt *opt, t_env *env)
 {
 	int			ch;
 	t_buffer	buf;
 
-	env->name = av[0];
+	env->name = (*av)[0];
 	ft_puterr(env->name, NULL);
 	OPT_INIT(*opt);
 	opt->opterr = 2;
-	if ((ch = ft_getopt(ac, av, "", opt)) != -1)
+	if ((ch = ft_getopt(*ac, *av, "", opt)) != -1)
 	{
 		if (buffer_init_with(&buf, "usage: "))
 		{
-			buffer_cat(&buf, av[0]);
+			buffer_cat(&buf, (*av)[0]);
 			buffer_cat(&buf, " file...\n");
 			ft_putstr_fd(buf.str, 2);
 			buffer_deinit(&buf);
 		}
 		return (false);
 	}
+	*ac -= opt->optind;
+	*av += opt->optind;
 	return (true);
 }
 
@@ -88,10 +89,8 @@ int				main(int ac, char const *av[])
 	t_bool	success;
 
 	success = true;
-	if (parse_opt(ac, av, &opt, &env) == false)
+	if (parse_opt(&ac, &av, &opt, &env) == false)
 		return (1);
-	ac -= opt.optind;
-	av += opt.optind;
 	if (ac == 0)
 	{
 		success &= ft_nm("a.out", false, env);
