@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:10:50 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/12 18:15:39 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/14 12:26:48 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,5 +118,26 @@ void	unmap_file(t_mapping *map)
 	if (!map->_mallocd)
 	{
 		munmap(map->addr, map->size);
+	}
+}
+
+t_bool	is_large_enough(t_mapping map, void *addr, size_t size)
+{
+	size_t	offset;
+
+	offset = (char*)addr - (char*)map.addr;
+	if (map.size >= offset + size)
+	{
+/*		printf("%s sized %zu, can hold enough for %zu at offset %zu\n", map.path,
+				map.size, size,
+				(size_t)((char*)addr - ((char*)map.addr)));*/
+		return (true);
+	}
+	else
+	{
+/*		printf("%s sized %zu, can NOT hold enough for %zu at offset %zu",
+				map.path, map.size, size,
+				(size_t)((char*)addr - ((char*)map.addr)));*/
+		return (false);
 	}
 }

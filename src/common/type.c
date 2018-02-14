@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 11:04:49 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/14 11:24:14 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/14 12:36:20 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <mach-o/loader.h>
 #include "common.h"
 
-t_bool	check_header(t_mapping map,
+t_file	check_header(t_mapping map,
 		struct fat_header **fat, struct mach_header_64 **mach)
 {
 	if (is_large_enough(map, map.addr, sizeof((*fat)->magic)))
@@ -38,5 +38,8 @@ t_bool	check_header(t_mapping map,
 			ft_puterr(NULL, "The file was not recognized "
 					"as a valid object file");
 	}
-	return (false);
+	else
+		ft_puterr(NULL, "The file was not recognized "
+				"as a valid object file");
+	return (E_FILE_INVALID);
 }

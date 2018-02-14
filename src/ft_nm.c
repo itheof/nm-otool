@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/14 12:14:44 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/14 12:30:39 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include <mach-o/fat.h>
@@ -49,7 +49,7 @@ static t_bool	ft_nm(const char *path, t_bool show_path, t_env env)
 	success = true;
 	if (map_file(path, &map, env.name))
 	{
-		if (check_header(map, &fat, &mach))
+		if (check_header(map, &fat, &mach) != E_FILE_INVALID)
 		{
 		/*
 			if (!fat_get_default_arch(map, &addr))

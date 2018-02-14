@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/13 13:41:44 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/14 12:25:42 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,28 @@ typedef struct	s_mapping
 	t_bool		_mallocd;
 }				t_mapping;
 
+typedef enum	e_file
+{
+	E_FILE_INVALID = 0,
+	E_FILE_FAT,
+	E_FILE_FAT_64,
+	E_FILE_AR,
+	E_FILE_MACH_O,
+	E_FILE_MACH_O_64,
+}				t_file;
+
 t_bool	fat_get_default_arch(t_mapping map, struct fat_arch_64 **addr);
 
-t_bool	map_file(const char *path, t_mapping *map, const char *name);
 void	ft_perror(char const *name);
 void	ft_puterr(char const *prefix, char const *msg);
-void	unmap_file(t_mapping *map);
 void	print_path(char const *path);
+
+t_bool	map_file(const char *path, t_mapping *map, const char *name);
+void	unmap_file(t_mapping *map);
 t_bool	is_large_enough(t_mapping map, void *addr, size_t size);
 
-t_bool	check_header(t_mapping map,
+t_file	check_header(t_mapping map,
 		struct fat_header **fat, struct mach_header_64 **mach);
+
 
 #endif
