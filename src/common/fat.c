@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 16:53:43 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/13 13:28:15 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/14 11:05:19 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,32 +60,5 @@ t_bool	fat_check_header(t_mapping map, struct fat_header **fat)
 	if (err.str != NULL)
 		ft_puterr(NULL, err.str);
 	buffer_deinit(&err);
-	return (false);
-}
-
-t_bool	check_header(t_mapping map,
-		struct fat_header **fat, struct mach_header_64 **mach)
-{
-	if (is_large_enough(map, map.addr, sizeof((*fat)->magic)))
-	{
-		if (*(uint32_t *)map.addr == FAT_CIGAM &&
-				is_large_enough(map, map.addr, sizeof(**fat)))
-			return (fat_check_header(map, fat));
-		else if (*(uint32_t *)map.addr == FAT_CIGAM_64)
-		{
-			ft_puterr(NULL, "Fat format 64 unsupported");
-		}
-		else if (*(uint32_t *)map.addr == MH_CIGAM)
-		{
-			;
-		}
-		else if (*(uint32_t *)map.addr == MH_CIGAM_64)
-		{
-			;
-		}
-		else
-			ft_puterr(NULL, "The file was not recognized "
-					"as a valid object file");
-	}
 	return (false);
 }
