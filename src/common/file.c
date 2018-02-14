@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:10:50 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/14 12:26:48 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/14 14:10:41 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,16 @@ static t_bool	map_regular_file(struct stat buf, t_mapping *map, int fd,
 {
 	t_buffer	err;
 
-	map->size = buf.st_size;
-	map->addr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-	if (map->addr == MAP_FAILED)
+	if ((map->size = buf.st_size) > 0)
 	{
-		ft_putstr_fd(name, 2);
-		ft_putstr_fd(": ", 2);
-		PERROR("mmap");
-		return (false);
+		map->addr = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+		if (map->addr == MAP_FAILED)
+		{
+			ft_putstr_fd(name, 2);
+			ft_putstr_fd(": ", 2);
+			PERROR("mmap");
+			return (false);
+		}
 	}
 	map->_mallocd = false;
 	if (!buffer_init_with(&err, name))
