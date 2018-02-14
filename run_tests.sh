@@ -50,7 +50,9 @@ compare () { # 1: Ref binary 2: Test binary 3+: Options
 }
 
 trap cleanup EXIT
+log Compare nm "&" ./ft_nm
 compare nm ./ft_nm
+#log Compare nm & ./ft_nm
 #compare otool ./ft_otool -t
 
 log All tests passed.
