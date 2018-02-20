@@ -6,71 +6,99 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/14 12:30:39 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/20 12:05:29 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include <mach-o/fat.h>
-#include "libft.h"
+#include "libft/buffer.h"
+#include "libft/print.h"
+#include "libft/libc.h"
 #include "ft_nm.h"
 #include "common.h"
 
-static t_bool	parse_opt(int *ac, char const **av[], t_opt *opt, t_env *env)
+static t_bool	usage_and_arch_deinit(char const *name, char option,
+		t_list *archs)
 {
-	int			ch;
 	t_buffer	buf;
+	char		tmp[2];
+
+	if (buffer_init(&buf))
+	{
+		buffer_cat(&buf, name);
+		buffer_cat(&buf, ": Unknown command line argument '");
+		tmp[1] = 0;
+		tmp[0] = option;
+		buffer_cat(&buf, tmp);
+		buffer_cat(&buf, "'.\n");
+		ft_putstr_fd(buf.str, 2);
+		buffer_deinit(&buf);
+	}
+	arch_deinit(archs);
+	if (buffer_init(&buf))
+	{
+		buffer_cat(&buf, "Usage: ");
+		buffer_cat(&buf, name);
+		buffer_cat(&buf, " [-arch arch_type] file...\n");
+		ft_putstr_fd(buf.str, 2);
+		buffer_deinit(&buf);
+	}
+	return (false);
+}
+
+static t_bool	parse_opt(int *ac, char const **av[], t_env *env)
+{
+	int		i;
+	t_err	err;
 
 	env->name = (*av)[0];
-	ft_puterr(env->name, NULL);
-	OPT_INIT(*opt);
-	opt->opterr = 2;
-	if ((ch = ft_getopt(*ac, *av, "", opt)) != -1)
-	{
-		if (buffer_init_with(&buf, "usage: "))
+	env->archs = NULL;
+	i = 1;
+	while (i < *ac)
+	{	
+		if (ft_strcmp((*av)[i], "--") == 0)
 		{
-			buffer_cat(&buf, (*av)[0]);
-			buffer_cat(&buf, " file...\n");
-			ft_putstr_fd(buf.str, 2);
-			buffer_deinit(&buf);
+			i++;
+			break;
 		}
-		return (false);
+		else if (ft_strcmp("-arch", (*av)[i]) == 0 && i < *ac + 1)
+		{
+			if ((err = arch_push_arg(&(env->archs), (*av)[i + 1])) &&
+					(arch_fatal_err(env->name, env->archs, (*av)[i + 1], err)))
+				return (false);
+			i += 2;
+		}
+		else if (ft_strlen((*av)[i]) > 1 && (*av)[i][0] == '-')
+			return (usage_and_arch_deinit(env->name, (*av)[i][1], env->archs));
+		else
+			break;
 	}
-	*ac -= opt->optind;
-	*av += opt->optind;
+	ft_puterr(env->name, NULL);
+	*ac -= i;
+	*av += i;
+	env->show_path = (*ac > 1) ? true : false;
 	return (true);
 }
 
-static t_bool	ft_nm(const char *path, t_bool show_path, t_env env)
+static t_bool	ft_nm(const char *path, t_env env)
 {
-	struct fat_header		*fat;
-	struct mach_header_64	*mach;
-	t_mapping				map;
-	t_bool					success;
+	t_mapping	map;
+	t_bool		success;
+	t_file		type;
+	t_bool		(*jump[])(t_mapping map) = {
+		[E_FILE_FAT] = NULL,
+		[E_FILE_FAT_64] = NULL,
+		[E_FILE_AR] = NULL,
+		[E_FILE_MACH_O] = NULL,
+		[E_FILE_MACH_O_64] = NULL,
+	};
 
 	success = true;
 	if (map_file(path, &map, env.name))
 	{
-		if (check_header(map, &fat, &mach) != E_FILE_INVALID)
+		if ((type = check_header(map)) != E_FILE_INVALID)
 		{
-		/*
-			if (!fat_get_default_arch(map, &addr))
-				return (false);
-			if (addr == NULL)
-			{
-				while (true)
-				{
-					if (!fat_get_next_arch(map, &addr))
-					{
-						success = false;
-						break;
-					}
-					if (addr == NULL)
-						break;
-					success &= process_arch(addr);
-				}
-				fat_get_next_arch(map, NULL);
-			}
-			else
-				success &= process_arch(addr);*/
+			;//success = jump[type](map);
 		}
 		else
 			success = false;
@@ -85,27 +113,24 @@ static t_bool	ft_nm(const char *path, t_bool show_path, t_env env)
 int				main(int ac, char const *av[])
 {
 	t_env	env;
-	t_opt	opt;
 	t_bool	success;
 
 	success = true;
-	if (parse_opt(&ac, &av, &opt, &env) == false)
+	if (parse_opt(&ac, &av, &env) == false)
 		return (1);
 	if (ac == 0)
-	{
-		success &= ft_nm("a.out", false, env);
-	}
+		success &= ft_nm("a.out", env);
 	else if (ac > 1)
 	{
 		while (ac != 0)
 		{
-			success &= ft_nm(av[0], true, env);
+			success &= ft_nm(av[0], env);
 			ac--;
 			av++;
 		}
 	}
 	else
-		success &= ft_nm(av[0], false, env);
+		success &= ft_nm(av[0], env);
 	ft_puterr(NULL, NULL);
 	return ((success == true) ? EXIT_SUCCESS : EXIT_FAILURE);
 }

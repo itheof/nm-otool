@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/14 11:04:49 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/14 12:36:20 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/19 11:23:15 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,22 @@
 #include <mach-o/loader.h>
 #include "common.h"
 
-t_file	check_header(t_mapping map,
-		struct fat_header **fat, struct mach_header_64 **mach)
+t_file						check_header(t_mapping map)
 {
-	if (is_large_enough(map, map.addr, sizeof((*fat)->magic)))
+	if (is_large_enough(map, map.addr, sizeof(t_magic)))
 	{
-		if (*(uint32_t *)map.addr == FAT_CIGAM &&
-				is_large_enough(map, map.addr, sizeof(**fat)))
-			return (fat_check_header(map, fat));
-		else if (*(uint32_t *)map.addr == FAT_CIGAM_64)
+		if (*(t_magic *)map.addr == FAT_CIGAM &&
+				is_large_enough(map, map.addr, sizeof(struct fat_header)))
+			return (fat_pre_check(map));
+		else if (*(t_magic *)map.addr == FAT_CIGAM_64)
 		{
 			ft_puterr(NULL, "Fat format 64 unsupported");
 		}
-		else if (*(uint32_t *)map.addr == MH_CIGAM)
+		else if (*(t_magic *)map.addr == MH_CIGAM)
 		{
 			;
 		}
-		else if (*(uint32_t *)map.addr == MH_CIGAM_64)
+		else if (*(t_magic *)map.addr == MH_CIGAM_64)
 		{
 			;
 		}

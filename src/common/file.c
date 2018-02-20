@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:10:50 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/14 14:10:41 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/20 11:52:20 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include "common.h"
 #include "libft/string.h"
 #include "libft/buffer.h"
+#include "libft/print.h"
+#include "libft/libc.h"
 
 static int		get_fd(const char *path, t_mapping *map, const char *name)
 {
@@ -119,11 +121,11 @@ void	unmap_file(t_mapping *map)
 {
 	if (!map->_mallocd)
 	{
-		munmap(map->addr, map->size);
+		munmap((void*)map->addr, map->size);
 	}
 }
 
-t_bool	is_large_enough(t_mapping map, void *addr, size_t size)
+t_bool	is_large_enough(t_mapping map, void const *addr, size_t size)
 {
 	size_t	offset;
 

@@ -6,11 +6,12 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/29 13:50:26 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/14 12:26:52 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/20 11:50:01 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/print.h"
+#include "libft/libc.h"
 #include "libft/string.h"
 #include "libft/stdbool.h"
 #include "common.h"
