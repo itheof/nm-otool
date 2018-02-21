@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/20 09:41:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/21 17:52:24 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/21 21:35:19 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,23 @@
 #include "libft/libc.h"
 #include "common.h"
 
-t_err	arch_create_link(t_list **dst, char const *arg, size_t *narchs)
+t_bool	arch_add_default(t_list **dst, size_t *narchs)
+{
+	const NXArchInfo	*info;
+
+	if ((info = NXGetArchInfoFromName("x86_64")))
+	{
+		if ((*dst = ft_lstnewcopy((void *)info, sizeof(*info))) == NULL)
+		{
+			NXFreeArchInfo(info);
+			return (false);
+		}
+		*narchs += 1;
+	}
+	return (true);
+}
+
+static t_err	arch_create_link(t_list **dst, char const *arg, size_t *narchs)
 {
 	const NXArchInfo	*info;
 

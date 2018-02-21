@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/21 17:20:16 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/21 21:16:09 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,9 @@ static t_bool	parse_opt(int *ac, char const **av[], t_env *env)
 		}
 		else if (ft_strcmp("-arch", (*av)[i]) == 0 && i < *ac + 1)
 		{
-			if ((err = arch_push_arg(
+			if (ft_strcmp("all", (*av)[i + 1]) == 0)
+				env->all_archs = true;
+			else if ((err = arch_push_arg(
 							&(env->archs), (*av)[i + 1], &(env->narchs))) &&
 					arch_fatal_err(env->name, env->archs, (*av)[i + 1], err))
 				return (false);
@@ -103,6 +105,12 @@ int				main(int ac, char const *av[])
 	success = true;
 	if (parse_opt(&ac, &av, &env) == false)
 		return (1);
+	if (!env.narchs && !arch_add_default(&(env.archs), &(env.narchs)))
+	{
+		PERROR("malloc");
+		// cleanup
+		return (1);
+	}	
 	if (ac == 0)
 		success &= ft_nm("a.out", env);
 	else if (ac > 1)

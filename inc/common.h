@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/21 17:22:27 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/21 21:00:35 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ t_bool	is_large_enough(t_mapping map, void const *addr, size_t size);
 
 t_file	check_header(t_mapping map);
 
+t_bool	arch_add_default(t_list **dst, size_t *narchs);
 t_err	arch_push_arg(t_list **lsth, char const *arg, size_t *narchs);
 void	arch_deinit(t_list *archs);
 t_bool	arch_fatal_err(char const *name, t_list *archs, char const *arg,
