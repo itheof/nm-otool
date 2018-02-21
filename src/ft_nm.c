@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/21 13:05:50 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/21 17:20:16 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static t_bool	parse_opt(int *ac, char const **av[], t_env *env)
 
 	env->name = (*av)[0];
 	env->archs = NULL;
+	env->narchs = 0;
 	i = 1;
 	while (i < *ac)
 	{	
@@ -63,8 +64,9 @@ static t_bool	parse_opt(int *ac, char const **av[], t_env *env)
 		}
 		else if (ft_strcmp("-arch", (*av)[i]) == 0 && i < *ac + 1)
 		{
-			if ((err = arch_push_arg(&(env->archs), (*av)[i + 1])) &&
-					(arch_fatal_err(env->name, env->archs, (*av)[i + 1], err)))
+			if ((err = arch_push_arg(
+							&(env->archs), (*av)[i + 1], &(env->narchs))) &&
+					arch_fatal_err(env->name, env->archs, (*av)[i + 1], err))
 				return (false);
 			i += 2;
 		}

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/20 09:41:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/20 12:03:06 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/21 17:52:24 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,43 @@
 #include "libft/stdbool.h"
 #include "libft/buffer.h"
 #include "libft/print.h"
+#include "libft/libc.h"
 #include "common.h"
 
-t_err	arch_push_arg(t_list **lsth, char const *arg)
+t_err	arch_create_link(t_list **dst, char const *arg, size_t *narchs)
 {
 	const NXArchInfo	*info;
-	t_list				*link;
 
 	if ((info = NXGetArchInfoFromName(arg)) == NULL)
 		return (E_ERR_INVALID_ARCH);
-	if ((link = ft_lstnewcopy((void*)info, sizeof(*info))) == NULL)
+	if ((*dst = ft_lstnewcopy((void*)info, sizeof(*info))) == NULL)
+	{
+		NXFreeArchInfo(info);
 		return (E_ERR_MALLOC);
-	ft_lstpushback(lsth, link);
+	}
+	*narchs += 1;
 	return (E_ERR_NONE);
+}
+
+t_err	arch_push_arg(t_list **lsth, char const *arg, size_t *narchs)
+{
+	t_list	*current;
+
+	if (*lsth)
+	{
+		current = *lsth;
+		while (current)
+		{
+			if (!ft_strcmp(((const NXArchInfo *)current->content)->name, arg))
+				return (E_ERR_NONE);
+			if (current->next == NULL)
+				break;
+			current = current->next;
+		}
+		return (arch_create_link(&(current->next), arg, narchs));
+	}
+	else
+		return (arch_create_link(lsth, arg, narchs));
 }
 
 void	arch_deinit(t_list *archs)

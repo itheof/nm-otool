@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/20 11:58:29 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/21 17:22:27 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ typedef uint32_t	t_magic;
 
 t_bool	fat_get_default_arch(t_mapping map, struct fat_arch_64 **addr);
 t_bool	fat_handle(t_mapping map);
+t_bool	fat_pre_check(t_mapping map);
 
 void	ft_perror(char const *name);
 void	ft_puterr(char const *prefix, char const *msg);
@@ -68,7 +69,7 @@ t_bool	is_large_enough(t_mapping map, void const *addr, size_t size);
 
 t_file	check_header(t_mapping map);
 
-t_err	arch_push_arg(t_list **lsth, char const *arg);
+t_err	arch_push_arg(t_list **lsth, char const *arg, size_t *narchs);
 void	arch_deinit(t_list *archs);
 t_bool	arch_fatal_err(char const *name, t_list *archs, char const *arg,
 		t_err err);
