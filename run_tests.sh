@@ -25,7 +25,7 @@ assert () {
 }
 
 compare () { # 1: Ref binary 2: Test binary 3+: Options
-	files=$(find "${TEST_PATH}" -not -name "*.c" -not -name "*.xxd" -not -type d -exec ls -1t "{}" "+;")
+	files=$(find "${TEST_PATH}" -not -name "*.c" -not -name "*.xxd" -not -type d -exec ls -1 "{}" "+;")
 	for file in $files;
 	do
 		log Running \`"$1" $3 "$file"\`

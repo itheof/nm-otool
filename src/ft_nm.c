@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/20 12:05:29 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/21 13:05:50 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,26 +84,9 @@ static t_bool	ft_nm(const char *path, t_env env)
 {
 	t_mapping	map;
 	t_bool		success;
-	t_file		type;
-	t_bool		(*jump[])(t_mapping map) = {
-		[E_FILE_FAT] = NULL,
-		[E_FILE_FAT_64] = NULL,
-		[E_FILE_AR] = NULL,
-		[E_FILE_MACH_O] = NULL,
-		[E_FILE_MACH_O_64] = NULL,
-	};
 
-	success = true;
 	if (map_file(path, &map, env.name))
-	{
-		if ((type = check_header(map)) != E_FILE_INVALID)
-		{
-			;//success = jump[type](map);
-		}
-		else
-			success = false;
-		ft_putchar_fd('\n', 2);
-	}
+		success = ft_nm_show_symbols(map, env);
 	else
 		success = false;
 	unmap_file(&map);

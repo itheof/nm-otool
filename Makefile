@@ -15,7 +15,8 @@ endif
 # Headers
 CFLAGS    += -I./inc
 
-COM_SOURCES = common/misc.c common/file.c common/fat.c common/type.c common/arch.c
+COM_SOURCES = common/misc.c common/file.c common/fat.c common/type.c \
+			  common/arch.c ft_nm_show_symbols.c
 
 # Sources
 SRC_PATH    = src
