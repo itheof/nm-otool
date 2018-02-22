@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/21 21:00:35 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/22 18:33:51 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@
 # else
 #  define PERROR(x) ft_perror(x)
 # endif
+
+# define ERR_INVALID "The file was not recognized as a valid object file"
 
 typedef struct	s_mapping
 {
@@ -53,21 +55,38 @@ typedef enum	e_err
 	E_ERR_MALLOC,
 }				t_err;
 
+typedef struct	s_out
+{
+	const char	*path;
+	const char	*arch_name;
+	const char	*ar_name;
+}				t_out;
+
+typedef struct	s_fat
+{
+	char	idgs;
+}				t_fat;
+
+
 typedef uint32_t	t_magic;
 
-t_bool	fat_get_default_arch(t_mapping map, struct fat_arch_64 **addr);
-t_bool	fat_handle(t_mapping map);
-t_bool	fat_pre_check(t_mapping map);
+typedef t_bool		(*t_arch_fun)(t_mapping map, void const *addr, t_out out);
+
+t_list	*fat_init(t_mapping map, t_bool all_archs, t_list *archs, size_t narchs);
+t_bool	fat_iter(t_list *lst, t_arch_fun f, t_mapping map, t_out out);
+t_bool	fat_apply(t_list *lst, t_arch_fun f, t_mapping map, t_out out);
+void	fat_deinit(t_list *lst);
 
 void	ft_perror(char const *name);
 void	ft_puterr(char const *prefix, char const *msg);
 void	print_path(char const *path);
+void	ft_putout(t_out out);
 
 t_bool	map_file(const char *path, t_mapping *map, const char *name);
 void	unmap_file(t_mapping *map);
 t_bool	is_large_enough(t_mapping map, void const *addr, size_t size);
 
-t_file	check_header(t_mapping map);
+t_file	get_file_type(t_mapping map, void const *addr);
 
 t_bool	arch_add_default(t_list **dst, size_t *narchs);
 t_err	arch_push_arg(t_list **lsth, char const *arg, size_t *narchs);

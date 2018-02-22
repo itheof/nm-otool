@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/21 21:16:09 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/22 18:34:41 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,17 +80,23 @@ static t_bool	parse_opt(int *ac, char const **av[], t_env *env)
 	ft_puterr(env->name, NULL);
 	*ac -= i;
 	*av += i;
-	env->show_path = (*ac > 1) ? true : false;
 	return (true);
 }
 
-static t_bool	ft_nm(const char *path, t_env env)
+static t_bool	ft_nm(const char *path, t_env env, t_bool show_path)
 {
 	t_mapping	map;
 	t_bool		success;
+	t_out		out;
 
 	if (map_file(path, &map, env.name))
-		success = ft_nm_show_symbols(map, env);
+	{
+		if (show_path)
+			out.path = map.path;
+		else
+			out.path = NULL;
+		success = nm_fat_wrap(map, out, env);
+	}
 	else
 		success = false;
 	unmap_file(&map);
@@ -105,25 +111,19 @@ int				main(int ac, char const *av[])
 	success = true;
 	if (parse_opt(&ac, &av, &env) == false)
 		return (1);
-	if (!env.narchs && !arch_add_default(&(env.archs), &(env.narchs)))
-	{
-		PERROR("malloc");
-		// cleanup
-		return (1);
-	}	
 	if (ac == 0)
-		success &= ft_nm("a.out", env);
+		success &= ft_nm("a.out", env, false);
 	else if (ac > 1)
 	{
 		while (ac != 0)
 		{
-			success &= ft_nm(av[0], env);
+			success &= ft_nm(av[0], env, true);
 			ac--;
 			av++;
 		}
 	}
 	else
-		success &= ft_nm(av[0], env);
+		success &= ft_nm(av[0], env, false);
 	ft_puterr(NULL, NULL);
 	return ((success == true) ? EXIT_SUCCESS : EXIT_FAILURE);
 }

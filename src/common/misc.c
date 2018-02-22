@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/29 13:50:26 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/20 11:50:01 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/22 18:51:23 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,36 @@
 #include "libft/libc.h"
 #include "libft/string.h"
 #include "libft/stdbool.h"
+#include "libft/buffer.h"
 #include "common.h"
+
+void	ft_putout(t_out out)
+{
+	t_buffer	buf;
+
+	if (buffer_init(&buf))
+	{
+		if (out.path || out.arch_name || out.ar_name)
+		{
+			buffer_cat(&buf, out.path);	
+		}
+		if (out.ar_name)
+		{
+			buffer_cat(&buf, "(");
+			buffer_cat(&buf, out.ar_name);
+			buffer_cat(&buf, ")");
+		}
+		if (out.arch_name)
+		{
+			buffer_cat(&buf, " for architechture (");
+			buffer_cat(&buf, out.arch_name);
+			buffer_cat(&buf, ")");
+		}
+		buffer_cat(&buf, ":\n");
+		ft_putstr(buf.str);
+		buffer_deinit(buf);
+	}
+}
 
 void	ft_perror(char const *name)
 {
