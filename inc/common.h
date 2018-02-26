@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/22 18:33:51 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/26 19:19:15 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,8 @@ typedef struct	s_out
 
 typedef struct	s_fat
 {
-	char	idgs;
+	void const				*addr;
+	struct NXArchInfo const	*info;
 }				t_fat;
 
 
@@ -72,7 +73,7 @@ typedef uint32_t	t_magic;
 
 typedef t_bool		(*t_arch_fun)(t_mapping map, void const *addr, t_out out);
 
-t_list	*fat_init(t_mapping map, t_bool all_archs, t_list *archs, size_t narchs);
+t_list	*fat_init(t_mapping map, t_bool all_archs, t_list *archs);
 t_bool	fat_iter(t_list *lst, t_arch_fun f, t_mapping map, t_out out);
 t_bool	fat_apply(t_list *lst, t_arch_fun f, t_mapping map, t_out out);
 void	fat_deinit(t_list *lst);

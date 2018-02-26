@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/29 13:50:26 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/22 18:51:23 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/02/26 10:24:31 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	ft_putout(t_out out)
 		}
 		buffer_cat(&buf, ":\n");
 		ft_putstr(buf.str);
-		buffer_deinit(buf);
+		buffer_deinit(&buf);
 	}
 }
 
