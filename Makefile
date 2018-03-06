@@ -11,12 +11,14 @@ ifeq ($(SAN),yes)
 	CFLAGS	+= -fsanitize=address
 	LDFLAGS += -fsanitize=address
 endif
+	CFLAGS  += $(TMP_CFLAGS)
 
 # Headers
 CFLAGS    += -I./inc
 
 COM_SOURCES = common/misc.c common/file.c common/fat.c common/fat_init.c \
-			  common/type.c common/arch.c ft_nm_show_symbols.c
+			  common/type.c common/arch.c ft_nm_show_symbols.c common/ar.c \
+			  ft_nm_parse_opt.c
 
 # Sources
 SRC_PATH    = src
@@ -57,7 +59,7 @@ $(NAME): %:$(OBJ_PATH)/%.o $(COM_OBJECTS) $(LIBFT)
 
 $(LIBFT):
 	@$(MAKE) -q -C $(LIBFT_PATH) || echo $(MAKE) -C $(LIBFT_PATH) && \
-		$(MAKE) -C $(LIBFT_PATH)
+		$(MAKE) -j8 -C $(LIBFT_PATH)
 
 $(OBJECTS): $(OBJ_PATH)/%.o: %.c | $(OBJ_PATH)/common
 	$(CC) $(CFLAGS) -o $@ -c $<

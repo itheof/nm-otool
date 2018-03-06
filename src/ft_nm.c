@@ -6,84 +6,41 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/26 17:04:58 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/06 12:45:00 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mach-o/fat.h>
-#include "libft/buffer.h"
 #include "libft/print.h"
 #include "libft/libc.h"
 #include "ft_nm.h"
 #include "common.h"
 
-static t_bool	usage_and_arch_deinit(char const *name, char option,
-		t_list *archs)
+static t_bool	ft_nm_switch_file_type(t_mapping map, t_out out, t_env env)
 {
-	t_buffer	buf;
-	char		tmp[2];
+	t_file		type;
+	void const	*addr;
 
-	if (buffer_init(&buf))
+	addr = map.addr;
+	type = get_file_type(map, addr);
+	if (type == E_FILE_FAT)
+		return (nm_fat_wrap(map, out, env));
+	//else if (type == E_FILE_FAT_64)
+	//	return ();
+	else if (type == E_FILE_AR)
+		return (nm_ar_wrap(map, addr, out, env.archs));
+	else if (type == E_FILE_MACH_O)
+		return (nm_mach_wrap(map, addr, out, env.archs));
+	//else if (type == E_FILE_MACH_O_64)
+	//	return ();
+	else
 	{
-		buffer_cat(&buf, name);
-		buffer_cat(&buf, ": Unknown command line argument '");
-		tmp[1] = 0;
-		tmp[0] = option;
-		buffer_cat(&buf, tmp);
-		buffer_cat(&buf, "'.\n");
-		ft_putstr_fd(buf.str, 2);
-		buffer_deinit(&buf);
+		ft_puterr(NULL, ERR_INVALID);
+		return (false);
 	}
-	arch_deinit(archs);
-	if (buffer_init(&buf))
-	{
-		buffer_cat(&buf, "Usage: ");
-		buffer_cat(&buf, name);
-		buffer_cat(&buf, " [-arch arch_type] file...\n");
-		ft_putstr_fd(buf.str, 2);
-		buffer_deinit(&buf);
-	}
-	return (false);
 }
 
-static t_bool	parse_opt(int *ac, char const **av[], t_env *env)
-{
-	int		i;
-	t_err	err;
-
-	env->name = (*av)[0];
-	env->archs = NULL;
-	env->narchs = 0;
-	i = 1;
-	while (i < *ac)
-	{	
-		if (ft_strcmp((*av)[i], "--") == 0)
-		{
-			i++;
-			break;
-		}
-		else if (ft_strcmp("-arch", (*av)[i]) == 0 && i < *ac + 1)
-		{
-			if (ft_strcmp("all", (*av)[i + 1]) == 0)
-				env->all_archs = true;
-			else if ((err = arch_push_arg(
-							&(env->archs), (*av)[i + 1], &(env->narchs))) &&
-					arch_fatal_err(env->name, env->archs, (*av)[i + 1], err))
-				return (false);
-			i += 2;
-		}
-		else if (ft_strlen((*av)[i]) > 1 && (*av)[i][0] == '-')
-			return (usage_and_arch_deinit(env->name, (*av)[i][1], env->archs));
-		else
-			break;
-	}
-	ft_puterr(env->name, NULL);
-	*ac -= i;
-	*av += i;
-	return (true);
-}
-
-static t_bool	ft_nm(const char *path, t_env env, t_bool show_path)
+static t_bool	ft_nm_file_wrap(const char *path, t_env env, t_bool show_path)
 {
 	t_mapping	map;
 	t_bool		success;
@@ -91,14 +48,15 @@ static t_bool	ft_nm(const char *path, t_env env, t_bool show_path)
 
 	if (map_file(path, &map, env.name))
 	{
+		ft_memset(&out, 0, sizeof(out));
 		if (show_path)
 			out.path = map.path;
-		else
-			out.path = NULL;
-		success = nm_fat_wrap(map, out, env);
+		success = ft_nm_switch_file_type(map, out, env);
 	}
 	else
 		success = false;
+	if (!success)
+		ft_putchar_fd('\n', 2);
 	unmap_file(&map);
 	return (success);
 }
@@ -109,21 +67,22 @@ int				main(int ac, char const *av[])
 	t_bool	success;
 
 	success = true;
-	if (parse_opt(&ac, &av, &env) == false)
-		return (1);
+	if (nm_init_env(&ac, &av, &env) == false)
+		return (EXIT_FAILURE);
 	if (ac == 0)
-		success &= ft_nm("a.out", env, false);
+		success &= ft_nm_file_wrap("a.out", env, false);
 	else if (ac > 1)
 	{
 		while (ac != 0)
 		{
-			success &= ft_nm(av[0], env, true);
+			success &= ft_nm_file_wrap(av[0], env, true);
 			ac--;
 			av++;
 		}
 	}
 	else
-		success &= ft_nm(av[0], env, false);
+		success &= ft_nm_file_wrap(av[0], env, false);
+	arch_deinit(env.archs);
 	ft_puterr(NULL, NULL);
 	return ((success == true) ? EXIT_SUCCESS : EXIT_FAILURE);
 }

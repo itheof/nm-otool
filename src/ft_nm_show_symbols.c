@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 12:54:17 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/26 20:40:26 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/06 12:39:44 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,14 @@
 #include "common.h"
 #include "libft/list.h"
 
-t_bool	nm_err_invalid_file(t_mapping map)
-{
-	ft_puterr(NULL, ERR_INVALID);
-	return (false);
-}
-
 t_bool	nm_mach_wrap(t_mapping map, void const *addr, t_out out,
-		NXArchInfo *info)
+		t_list *arch)
 {
 	t_bool	success;
 	t_file	type;
 
 	success = true;
+	/*
 	if ((type = get_file_type(map, map.addr)) == E_FILE_MACH_O)
 	{
 
@@ -40,29 +35,32 @@ t_bool	nm_mach_wrap(t_mapping map, void const *addr, t_out out,
 	{
 		return (false);
 	}
+	*/
+	printf("nm_mach_wrap\n");
+	return (true);
 }
 
-t_bool	nm_ar_wrap(t_mapping map, void const *addr, t_out out, NXArchInfo *info)
+t_bool	nm_ar_wrap(t_mapping map, void const *addr, t_out out, t_list *arch)
 {
 	t_bool	success;
 	t_file	type;
 
-	out.ar_name = NULL;
-	success = true;
-	if ((type = get_file_type(map, map.addr)) == E_FILE_AR)
-	{
+	printf("nm ar wrap\n");
+	if (!ar_init(map, addr))
+		return (false);
+	/*
+	(char*)addr += SARMAG;
 		out.path = map.path;
-		out.ar_name = "";
-	}
-	else if (type == E_FILE_MACH_O || type == E_FILE_MACH_O_64)
-		success = nm_mach_wrap(map, addr, out, info);
-	else
-	{
-		ft_puterr(NULL, ERR_INVALID);
-		ft_putchar_fd(10, 2);
-		success = false;
-	}
-	return (success);
+		if ((out.ar_name = ar_get_name(map, addr)) == NULL)
+		{
+			ft_puterr(NULL, AR_INVALID);
+			return (false);
+		}
+
+		printf("%s\n", out.ar_name);
+		free((char*)out.ar_name);
+		*/
+	return (true);
 }
 
 t_bool	nm_fat_wrap(t_mapping map, t_out out, t_env env)
@@ -71,29 +69,22 @@ t_bool	nm_fat_wrap(t_mapping map, t_out out, t_env env)
 	t_list	*lst;
 	t_bool	success;
 
-	out.arch_name = NULL;
 	success = true;
-	if ((type = get_file_type(map, map.addr)) == E_FILE_FAT)
-	{
+		/*
 		if ((lst = fat_init(map, env.all_archs, env.archs)) == NULL)
 			success = false;
 		else
 		{
-			if (ft_lstlen(lst) > 1)
+			if (lst->next != NULL) // aka len > 1
 				success = fat_iter(lst, nm_ar_wrap, map, out);
 			else
-				success = fat_apply(lst->content, nm_ar_wrap, map, out);
+				success = nm_ar_wrap(map, ((fat*)lst->content)->addr,
+						out, lst);
 			fat_deinit(lst);
 		}
 		if (!success)
 			ft_putchar_fd(10, 2);
 		return (success);
-	}
-	else if (type == E_FILE_FAT_64)
-	{
-		// copy above and change to 64
-		return (success);
-	}
-	else
-		return (nm_ar_wrap(map, map.addr, out, NULL));
+		*/
+	return (false);
 }

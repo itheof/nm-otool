@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/26 19:19:15 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/06 12:31:53 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@
 #  define PERROR(x) ft_perror(x)
 # endif
 
+# define DEFAULT_ARCH (void*)((char*)NULL - 1)
 # define ERR_INVALID "The file was not recognized as a valid object file"
+# define AR_INVALID "truncated or malformed archive"
+# define AR_NAME_SIZE sizeof(((struct ar_hdr*)(0))->ar_name)
 
 typedef struct	s_mapping
 {
@@ -75,8 +78,10 @@ typedef t_bool		(*t_arch_fun)(t_mapping map, void const *addr, t_out out);
 
 t_list	*fat_init(t_mapping map, t_bool all_archs, t_list *archs);
 t_bool	fat_iter(t_list *lst, t_arch_fun f, t_mapping map, t_out out);
-t_bool	fat_apply(t_list *lst, t_arch_fun f, t_mapping map, t_out out);
 void	fat_deinit(t_list *lst);
+
+char 	*ar_get_name(t_mapping map, void const *addr);
+t_bool	ar_init(t_mapping map, void const *addr);
 
 void	ft_perror(char const *name);
 void	ft_puterr(char const *prefix, char const *msg);
@@ -86,11 +91,13 @@ void	ft_putout(t_out out);
 t_bool	map_file(const char *path, t_mapping *map, const char *name);
 void	unmap_file(t_mapping *map);
 t_bool	is_large_enough(t_mapping map, void const *addr, size_t size);
+t_bool	is_eof(t_mapping map, void const *addr);
+off_t	map_get_offset(t_mapping map, void const *addr);
 
 t_file	get_file_type(t_mapping map, void const *addr);
 
-t_bool	arch_add_default(t_list **dst, size_t *narchs);
-t_err	arch_push_arg(t_list **lsth, char const *arg, size_t *narchs);
+t_bool	arch_add_default(t_list **dst);
+t_err	arch_push_arg(t_list **lsth, char const *arg);
 void	arch_deinit(t_list *archs);
 t_bool	arch_fatal_err(char const *name, t_list *archs, char const *arg,
 		t_err err);

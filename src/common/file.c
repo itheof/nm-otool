@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:10:50 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/20 11:52:20 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/06 12:32:39 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,16 @@ void	unmap_file(t_mapping *map)
 	{
 		munmap((void*)map->addr, map->size);
 	}
+}
+
+off_t	map_get_offset(t_mapping map, void const *addr)
+{
+	return ((char const *)addr - (char const *)map.addr);
+}
+
+t_bool	is_eof(t_mapping map, void const *addr)
+{
+	return (map.size + (char const *)map.addr == addr);
 }
 
 t_bool	is_large_enough(t_mapping map, void const *addr, size_t size)

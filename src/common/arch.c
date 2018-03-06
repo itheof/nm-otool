@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/20 09:41:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/21 21:35:19 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/05 17:05:12 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "libft/libc.h"
 #include "common.h"
 
-t_bool	arch_add_default(t_list **dst, size_t *narchs)
+t_bool	arch_from_default(t_list **dst)
 {
 	const NXArchInfo	*info;
 
@@ -28,12 +28,11 @@ t_bool	arch_add_default(t_list **dst, size_t *narchs)
 			NXFreeArchInfo(info);
 			return (false);
 		}
-		*narchs += 1;
 	}
 	return (true);
 }
 
-static t_err	arch_create_link(t_list **dst, char const *arg, size_t *narchs)
+static t_err	arch_create_link(t_list **dst, char const *arg)
 {
 	const NXArchInfo	*info;
 
@@ -44,11 +43,10 @@ static t_err	arch_create_link(t_list **dst, char const *arg, size_t *narchs)
 		NXFreeArchInfo(info);
 		return (E_ERR_MALLOC);
 	}
-	*narchs += 1;
 	return (E_ERR_NONE);
 }
 
-t_err	arch_push_arg(t_list **lsth, char const *arg, size_t *narchs)
+t_err	arch_push_arg(t_list **lsth, char const *arg)
 {
 	t_list	*current;
 
@@ -63,16 +61,18 @@ t_err	arch_push_arg(t_list **lsth, char const *arg, size_t *narchs)
 				break;
 			current = current->next;
 		}
-		return (arch_create_link(&(current->next), arg, narchs));
+		return (arch_create_link(&(current->next), arg));
 	}
 	else
-		return (arch_create_link(lsth, arg, narchs));
+		return (arch_create_link(lsth, arg));
 }
 
 void	arch_deinit(t_list *archs)
 {
 	t_list *next;
 
+	if (archs == NULL || archs->content == DEFAULT_ARCH)
+		return ;
 	while (archs != NULL)
 	{
 		next = archs->next;

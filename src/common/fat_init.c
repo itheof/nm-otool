@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 10:22:04 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/26 21:06:34 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/06 12:38:15 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "libft/buffer.h"
 #include "libft/swap.h"
 #include "common.h"
-
+/*
 static t_bool			fat_check_header(t_mapping map, uint32_t *narch)
 {
 	struct fat_header const	*fat;
@@ -90,9 +90,11 @@ static t_bool			fat_check_archs(t_mapping map, struct fat_arch *endian,
 		}
 		endian++;
 	}
+	return (true);
 }
-
-static t_err			fat_push_link(t_list **lst, struct fat_arch *addr,
+*/
+/*
+static t_err			fat_list_push(t_list **lst, struct fat_arch *addr,
 		struct NXArchInfo const *info)
 {
 	t_list	*current;
@@ -103,8 +105,9 @@ static t_err			fat_push_link(t_list **lst, struct fat_arch *addr,
 		if (((t_fat*)current->content)->info.)
 	}
 }
-
-static t_list			*fat_list_all(struct fat_arch *addr, uint32_t narchs)
+*/
+/*
+static t_list			*fat_list_all(void const *addr, struct fat_arch *addr, uint32_t narchs)
 {
 	t_list	*lst;
 
@@ -116,27 +119,53 @@ static t_list			*fat_list_all(struct fat_arch *addr, uint32_t narchs)
 	return (lst);
 }
 
-static t_list			*fat_list(struct fat_arch *addr, uint32_t narchs)
+static t_list			*fat_list(void const *addr, struct fat_arch *addr, uint32_t narchs)
 {
 	ft_puterr(NULL, "Not implemented yet");
 	return (NULL);
 }
+*/
 
-static t_list			*fat_list_default(struct fat_arch *addr,
+/*
+static void const		*fat_get_addr(void const *start, struct fat_arch const *fat)
+{
+	return ((char const *)start + fat->offset);
+}
+*/
+
+/*
+static t_list			*fat_list_default(void const * addr, struct fat_arch *archs,
 		uint32_t narchs)
 {
+	t_list	*new;
+	t_fat	tmp;
+
+	new = NULL;
 	if (narchs == 1)
 	{
-		
+		tmp.info = NULL;
+		tmp.addr = fat_get_addr(addr, arch);
+		ft_lstnew();
 	}
-}
+	else
+	{
+		if (nxinfo de l arch locale trouvee dans archs)
+		{
+		}
+		else
+		{
+			nxinfos de toutes les archs trouvees dans archs
+		}
+	}
+}*/
 
 /*
 ** performs most checks including fat_arch offsets and sizes.
 ** returns a list of t_fat *
 */
+/*
 t_list					*fat_init(t_mapping map, t_bool all_archs,
-		t_list *arch_infos)
+		t_list *req_archs)
 {
 	t_list			*lst;
 	struct fat_arch	*endian;
@@ -150,12 +179,13 @@ t_list					*fat_init(t_mapping map, t_bool all_archs,
 		{
 			if (fat_check_archs(map, endian, narchs))
 			{
+				if (req_archs)
 				if (all_archs)
-					lst = fat_list_all(endian, narchs);
-				else if (arch_infos != NULL)
-					lst = fat_list(endian, narchs, arch_infos);
+					lst = NULL;//fat_list_all(map.addr, endian, narchs);
+				else if (req_archs != DEFAULT_ARCH)
+					lst = NULL;//fat_list(map.addr, endian, narchs, req_archs);
 				else
-					lst = fat_list_default(endian, narchs);
+					lst = fat_list_default(map.addr, endian, narchs);
 			}
 			free(endian);
 		}
@@ -165,3 +195,4 @@ t_list					*fat_init(t_mapping map, t_bool all_archs,
 		ft_puterr(NULL, ERR_INVALID);
 	return (NULL);
 }
+*/
