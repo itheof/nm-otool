@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:41:07 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/07 19:25:17 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/07 21:18:47 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,7 @@ static size_t	ar_name_length(char const *name)
 //TODO: overflow unsigned long long -> size_t ?
 static size_t	ar_ext_name_length(char const *ar_name)
 {
-	size_t	sar_efmt1;
-
-	sar_efmt1 = sizeof(AR_EFMT1);
-	return (ar_get_numeric_value(ar_name + sar_efmt1, AR_NAME_SIZE - sar_efmt1));
+	return (ar_get_numeric_value(ar_name + SAR_EFMT1, AR_NAME_SIZE - SAR_EFMT1));
 }
 
 static t_bool	ar_err_too_small_for_header(t_mapping ar, void const *addr)
@@ -96,6 +93,7 @@ static t_bool	ar_err_too_small_for_ext_name(void)
 	return (false);
 }
 
+//TODO: check trailing characters
 static t_bool	ar_parse_header(t_mapping ar, struct ar_hdr const *header,
 		t_ar_obj *info)
 {
@@ -105,10 +103,12 @@ static t_bool	ar_parse_header(t_mapping ar, struct ar_hdr const *header,
 	info->padding = info->size & 1;
 	info->data = ar;
 	info->data.size = info->size;
-	info->is_ext = ft_memcmp(AR_EFMT1, header->ar_name, sizeof(AR_EFMT1)) == 0;
+	info->is_ext = ft_memcmp(AR_EFMT1, header->ar_name, SAR_EFMT1) == 0;
 	if (info->is_ext)
 	{
 		info->name_len = ar_ext_name_length(header->ar_name);
+		info->size -= info->name_len;
+		info->data.size -= info->name_len;
 		info->name = (const char *)(header + 1);
 		if (!is_large_enough(ar, info->name, info->name_len)) // TODO: test
 			return (ar_err_too_small_for_ext_name());
@@ -145,10 +145,11 @@ static void	obj_dump(t_mapping obj)
 t_bool	ar_iter(t_mapping ar)
 {
 	struct ar_hdr const	*current;
-	t_bool				success;
+	//t_bool				success;
 	t_ar_obj			obj;
 
-	success = true;
+	//success = true;
+	setbuf(stderr, NULL);
 	current = ((struct ar_hdr const *)((char const*)ar.addr + SARMAG));
 	if (is_eof(ar, current))
 		current = NULL;
@@ -156,9 +157,10 @@ t_bool	ar_iter(t_mapping ar)
 	{
 		if (!ar_parse_header(ar, current, &obj))
 			return (false);
-		if (!is_large_enough(ar, obj.data.addr, obj.data.size))
+		if (!is_large_enough(ar, obj.data.addr, obj.size))
 			return (ar_err_too_small_for_object(ar, obj));
 
+		dprintf(2, "%.*s:\n", obj.name_len, obj.name);
 		obj_dump(obj.data);
 		current = ar_get_next_header(ar, current, obj);
 	}

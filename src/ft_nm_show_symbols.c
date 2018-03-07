@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 12:54:17 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/07 12:33:30 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/07 20:24:36 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ t_bool	nm_ar_wrap(t_mapping map, void const *addr, t_out out, t_list *arch)
 	t_bool	success;
 	t_file	type;
 
-	printf("nm ar wrap\n");
 	if (!ar_iter(map))
 		return (false);
 	/*
