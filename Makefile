@@ -82,6 +82,8 @@ $(TEST_DIR)/999_no_read_rights.out:
 check: $(NAME) $(TESTS)
 	./run_tests.sh
 
+tests: $(TESTS)
+
 clean:
 	$(RM) -rf $(OBJ_PATH) $(DEP_PATH) $(TESTS)
 	$(MAKE) -C $(LIBFT_PATH) clean
@@ -92,4 +94,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re check
+.PHONY: all clean fclean re check tests

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/06 12:31:53 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/07 12:46:01 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 # define ERR_INVALID "The file was not recognized as a valid object file"
 # define AR_INVALID "truncated or malformed archive"
 # define AR_NAME_SIZE sizeof(((struct ar_hdr*)(0))->ar_name)
+# define AR_SIZE_SIZE sizeof(((struct ar_hdr*)(0))->ar_size)
 
 typedef struct	s_mapping
 {
@@ -80,8 +81,7 @@ t_list	*fat_init(t_mapping map, t_bool all_archs, t_list *archs);
 t_bool	fat_iter(t_list *lst, t_arch_fun f, t_mapping map, t_out out);
 void	fat_deinit(t_list *lst);
 
-char 	*ar_get_name(t_mapping map, void const *addr);
-t_bool	ar_init(t_mapping map, void const *addr);
+t_bool	ar_iter(t_mapping ar);
 
 void	ft_perror(char const *name);
 void	ft_puterr(char const *prefix, char const *msg);

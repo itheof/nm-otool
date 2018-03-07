@@ -55,3 +55,4 @@ dkms.conf
 
 # Vim buffer
 .*.swp
+Session.vim
