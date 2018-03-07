@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/07 12:46:01 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/07 18:38:07 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,15 @@ typedef struct	s_fat
 	struct NXArchInfo const	*info;
 }				t_fat;
 
+typedef struct	s_ar_obj
+{
+	t_mapping			data;
+	char const			*name;
+	unsigned long long	name_len;
+	unsigned long long	size;
+	int					padding;
+	t_bool				is_ext;
+}				t_ar_obj;
 
 typedef uint32_t	t_magic;
 
