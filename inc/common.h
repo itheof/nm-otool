@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/07 20:27:22 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/08 13:05:39 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define AR_NAME_SIZE sizeof(((struct ar_hdr*)(0))->ar_name)
 # define AR_SIZE_SIZE sizeof(((struct ar_hdr*)(0))->ar_size)
 # define SAR_EFMT1 (sizeof(AR_EFMT1) - 1) // for \0
+# define SARFMAG (sizeof(ARFMAG) - 1) // for \0
 
 typedef struct	s_mapping
 {

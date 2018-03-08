@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:41:07 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/07 21:18:47 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/08 13:45:54 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static t_bool	ar_err_too_small_for_header(t_mapping ar, void const *addr)
 	return (false);
 }
 
-static t_bool	ar_err_too_small_for_object(t_mapping ar, t_ar_obj obj)
+static t_bool	ar_err_too_small_for_object(t_ar_obj obj)
 {
 	t_buffer	buf;
 
@@ -88,34 +88,68 @@ static t_bool	ar_err_too_small_for_object(t_mapping ar, t_ar_obj obj)
 	return (false);
 }
 
-static t_bool	ar_err_too_small_for_ext_name(void)
+static t_bool	ar_err_too_small_for_ext_name(unsigned long long name_len)
 {
+	t_buffer	buf;
+
+	if (buffer_init(&buf))
+	{
+		buffer_cat(&buf, AR_INVALID " (remaining size of archive too small for "
+				"specified extended format name size: ");
+		buffer_cat_num(&buf, name_len);
+		buffer_cat(&buf, ")");
+		ft_puterr(NULL, buf.str);
+		buffer_deinit(&buf);
+	}
 	return (false);
 }
 
-//TODO: check trailing characters
+static t_bool	ar_err_bad_terminator_chars(t_mapping ar,
+		struct ar_hdr const *header, t_ar_obj const *info)
+{
+	t_buffer	buf;
+
+	if (buffer_init(&buf))
+	{
+		buffer_cat(&buf, AR_INVALID " (terminator characters in archive member "
+				"\"");
+		if (info->is_ext)
+			buffer_cat(&buf, " ");
+		else
+			buffer_ncat(&buf, header->ar_name, ar_name_length(header->ar_name));
+		buffer_cat(&buf, "\" not the correct \"`\\n\" values for the "
+				"archive member header at offset ");
+		buffer_cat_num(&buf, map_get_offset(ar, header));
+		buffer_cat(&buf, ")");
+		ft_puterr(NULL, buf.str);
+		buffer_deinit(&buf);
+	}
+	return (false);
+}
+
 static t_bool	ar_parse_header(t_mapping ar, struct ar_hdr const *header,
 		t_ar_obj *info)
 {
 	if (!is_large_enough(ar, header, sizeof(*header)))
 		return (ar_err_too_small_for_header(ar, header));
-	info->size = ar_header_size(header); //redundancy with info->data.size ?
+	info->size = ar_header_size(header);
 	info->padding = info->size & 1;
 	info->data = ar;
-	info->data.size = info->size;
 	info->is_ext = ft_memcmp(AR_EFMT1, header->ar_name, SAR_EFMT1) == 0;
+	if (ft_memcmp(header->ar_fmag, ARFMAG, SARFMAG) != 0)
+		return (ar_err_bad_terminator_chars(ar, header, info));
 	if (info->is_ext)
 	{
 		info->name_len = ar_ext_name_length(header->ar_name);
-		info->size -= info->name_len;
-		info->data.size -= info->name_len;
+		info->data.size = info->size - info->name_len;
 		info->name = (const char *)(header + 1);
-		if (!is_large_enough(ar, info->name, info->name_len)) // TODO: test
-			return (ar_err_too_small_for_ext_name());
+		if (!is_large_enough(ar, info->name, info->name_len))
+			return (ar_err_too_small_for_ext_name(info->name_len));
 		info->data.addr = (const char *)info->name + info->name_len;
 	}
 	else
 	{
+		info->data.size = info->size;
 		info->name = header->ar_name;
 		info->name_len = ar_name_length(info->name);
 		info->data.addr = (const char *)(header + 1);
@@ -130,8 +164,6 @@ static struct ar_hdr const	*ar_get_next_header(t_mapping ar,
 	unsigned long long	offset;
 
 	offset = obj.size + obj.padding;
-	if (obj.is_ext)
-		offset += obj.name_len;
 	next = (struct ar_hdr const *)((char const *)(last + 1) + offset);
 	return ((is_eof(ar, next)) ? NULL : next);
 }
@@ -145,10 +177,8 @@ static void	obj_dump(t_mapping obj)
 t_bool	ar_iter(t_mapping ar)
 {
 	struct ar_hdr const	*current;
-	//t_bool				success;
 	t_ar_obj			obj;
 
-	//success = true;
 	setbuf(stderr, NULL);
 	current = ((struct ar_hdr const *)((char const*)ar.addr + SARMAG));
 	if (is_eof(ar, current))
@@ -157,10 +187,10 @@ t_bool	ar_iter(t_mapping ar)
 	{
 		if (!ar_parse_header(ar, current, &obj))
 			return (false);
-		if (!is_large_enough(ar, obj.data.addr, obj.size))
-			return (ar_err_too_small_for_object(ar, obj));
+		if (!is_large_enough(ar, current + 1, obj.size + obj.padding))
+			return (ar_err_too_small_for_object(obj));
 
-		dprintf(2, "%.*s:\n", obj.name_len, obj.name);
+		dprintf(2, "size: %llu, %.*s:\n", obj.data.size, obj.name_len, obj.name);
 		obj_dump(obj.data);
 		current = ar_get_next_header(ar, current, obj);
 	}
