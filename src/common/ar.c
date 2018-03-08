@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:41:07 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/08 13:45:54 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/03/08 17:57:53 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "libft/libc.h"
 #include "libft/buffer.h"
 #include "common.h"
+
+//TODO: Split into several files
 
 static unsigned long long	ar_get_numeric_value(char const *str, size_t n)
 {
@@ -32,7 +34,7 @@ static unsigned long long	ar_get_numeric_value(char const *str, size_t n)
 	return (ret);
 }
 
-//TODO: Gestion d erreur si (!ft_isdigit) ?
+//TODO: Gestion d erreur si (!ft_isdigit)
 
 static unsigned long long	ar_header_size(struct ar_hdr const *header)
 {
@@ -56,7 +58,20 @@ static size_t	ar_ext_name_length(char const *ar_name)
 	return (ar_get_numeric_value(ar_name + SAR_EFMT1, AR_NAME_SIZE - SAR_EFMT1));
 }
 
-static t_bool	ar_err_too_small_for_header(t_mapping ar, void const *addr)
+static t_bool	ar_err_non_digits_in_size()
+{
+//TODO: 111 (characters in size field in archive header are not all decimal numbers: 'a' for archive member header at offset 8)
+	return (false);
+}
+
+static t_bool	ar_err_non_digits_in_long_name(off_t offset,
+		char const *ar_name)
+{
+//TODO: 112 (long name length characters after the #1/ are not all decimal numbers: 'a0' for archive member header at offset 8)
+	return (false);
+}
+
+static t_bool	ar_err_too_small_for_header(off_t offset)
 {
 	t_buffer	buf;
 
@@ -64,7 +79,7 @@ static t_bool	ar_err_too_small_for_header(t_mapping ar, void const *addr)
 	{
 		buffer_cat(&buf, AR_INVALID " (remaining size of archive too small for"
 				" next archive member header at offset ");
-		buffer_cat_num(&buf, map_get_offset(ar, addr));
+		buffer_cat_num(&buf, offset);
 		buffer_cat(&buf, ")");
 		ft_puterr(NULL, buf.str);
 		buffer_deinit(&buf);
@@ -131,7 +146,7 @@ static t_bool	ar_parse_header(t_mapping ar, struct ar_hdr const *header,
 		t_ar_obj *info)
 {
 	if (!is_large_enough(ar, header, sizeof(*header)))
-		return (ar_err_too_small_for_header(ar, header));
+		return (ar_err_too_small_for_header(map_get_offset(ar, header)));
 	info->size = ar_header_size(header);
 	info->padding = info->size & 1;
 	info->data = ar;
