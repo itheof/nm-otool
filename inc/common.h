@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/08 13:05:39 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/04/26 11:04:12 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,6 @@
 
 # define DEFAULT_ARCH (void*)((char*)NULL - 1)
 # define ERR_INVALID "The file was not recognized as a valid object file"
-# define AR_INVALID "truncated or malformed archive"
-# define AR_NAME_SIZE sizeof(((struct ar_hdr*)(0))->ar_name)
-# define AR_SIZE_SIZE sizeof(((struct ar_hdr*)(0))->ar_size)
-# define SAR_EFMT1 (sizeof(AR_EFMT1) - 1) // for \0
-# define SARFMAG (sizeof(ARFMAG) - 1) // for \0
 
 typedef struct	s_mapping
 {

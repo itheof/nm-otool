@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+#set -e
 
 TEST_PATH="./test"
 xc_path="\/Applications\/Xcode.app\/Contents\/Developer\/Toolchains\/XcodeDefault.xctoolchain\/usr\/bin\/"

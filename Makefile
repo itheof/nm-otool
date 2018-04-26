@@ -11,14 +11,14 @@ ifeq ($(SAN),yes)
 	CFLAGS	+= -fsanitize=address
 	LDFLAGS += -fsanitize=address
 endif
-	CFLAGS  += $(TMP_CFLAGS)
+CFLAGS  += $(TMP_CFLAGS)
 
 # Headers
 CFLAGS    += -I./inc
 
 COM_SOURCES = common/misc.c common/file.c common/fat.c common/fat_init.c \
 			  common/type.c common/arch.c ft_nm_show_symbols.c common/ar.c \
-			  ft_nm_parse_opt.c
+			  common/ar_err.c common/ar_tools.c ft_nm_parse_opt.c
 
 # Sources
 SRC_PATH    = src

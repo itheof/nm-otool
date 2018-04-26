@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 12:54:17 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/07 20:24:36 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/04/26 10:40:08 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ t_bool	nm_mach_wrap(t_mapping map, void const *addr, t_out out,
 		t_list *arch)
 {
 	t_bool	success;
-	t_file	type;
 
 	success = true;
 	/*
@@ -44,9 +43,6 @@ t_bool	nm_mach_wrap(t_mapping map, void const *addr, t_out out,
 
 t_bool	nm_ar_wrap(t_mapping map, void const *addr, t_out out, t_list *arch)
 {
-	t_bool	success;
-	t_file	type;
-
 	if (!ar_iter(map))
 		return (false);
 	/*
@@ -66,8 +62,8 @@ t_bool	nm_ar_wrap(t_mapping map, void const *addr, t_out out, t_list *arch)
 
 t_bool	nm_fat_wrap(t_mapping map, t_out out, t_env env)
 {
-	t_file	type;
-	t_list	*lst;
+	//t_file	type;
+	//t_list	*lst;
 	t_bool	success;
 
 	success = true;
