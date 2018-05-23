@@ -17,32 +17,14 @@
 #include "libft/stdbool.h"
 #include "libft/libc.h"
 
-/*
-** *addr must point to a location in the mapping.
-*/
-static t_bool	is_ar_header(t_mapping map, void const *addr)
+t_file	get_file_type(t_mapping map)
 {
-	return(is_large_enough(map, map.addr, SARMAG) &&
-			ft_memcmp(addr, ARMAG, SARMAG) == 0);
-}
-
-t_file	get_file_type(t_mapping map, void const *addr)
-{
-	t_magic	num;
+	t_file	type;
 	
-	if (is_ar_header(map, addr))
-		return (E_FILE_AR);
-	else if (is_large_enough(map, addr, sizeof(num)))
-	{
-		num = *(t_magic const *)addr;
-		if (num == FAT_CIGAM)
-			return (E_FILE_FAT);
-		else if (num == FAT_CIGAM_64)
-			return (E_FILE_FAT_64);
-		else if (num == MH_MAGIC)
-			return (E_FILE_MACH_O);
-		else if (num == MH_MAGIC_64)
-			return (E_FILE_MACH_O_64);
-	}
-	return (E_FILE_INVALID);
+	if ((type = ft_ar_is_ar(map)) != E_FILE_INVALID);
+	else if ((type = ft_fat_is_fat(map)) != E_FILE_INVALID);
+	else if ((type = ft_mach_is_mach_o(map)) != E_FILE_INVALID);
+	else
+		return (E_FILE_INVALID);
+	return (type);
 }

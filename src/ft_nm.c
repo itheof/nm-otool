@@ -22,17 +22,17 @@ static t_bool	ft_nm_switch_file_type(t_mapping map, t_out out, t_env env)
 	void const	*addr;
 
 	addr = map.addr;
-	type = get_file_type(map, addr);
+	type = get_file_type(map);
 	if (type == E_FILE_FAT)
 		return (nm_fat_wrap(map, out, env));
-	//else if (type == E_FILE_FAT_64)
-	//	return ();
+	else if (type == E_FILE_FAT_64)
+		return (nm_fat64_wrap(map, out, env));
 	else if (type == E_FILE_AR)
-		return (nm_ar_wrap(map, addr, out, env.archs));
+		return (nm_ar_wrap(map, out, env.archs));
 	else if (type == E_FILE_MACH_O)
-		return (nm_mach_wrap(map, addr, out, env.archs));
-	//else if (type == E_FILE_MACH_O_64)
-	//	return ();
+		return (nm_mach_wrap(map, out, env.archs));
+	else if (type == E_FILE_MACH_O_64)
+		return (nm_mach64_wrap(map, out, env.archs));
 	else
 	{
 		ft_puterr(NULL, ERR_INVALID);
@@ -52,11 +52,11 @@ static t_bool	ft_nm_file_wrap(const char *path, t_env env, t_bool show_path)
 		if (show_path)
 			out.path = map.path;
 		success = ft_nm_switch_file_type(map, out, env);
+		if (!success)
+			ft_putchar_fd('\n', 2);
 	}
 	else
 		success = false;
-	if (!success)
-		ft_putchar_fd('\n', 2);
 	unmap_file(&map);
 	return (success);
 }

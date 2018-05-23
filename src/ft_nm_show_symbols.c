@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/21 12:54:17 by tvallee           #+#    #+#             */
-/*   Updated: 2018/04/26 10:40:08 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/05/21 16:17:27 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,7 @@
 #include "common.h"
 #include "libft/list.h"
 
-//XXX: Replace map/addr with according sub mappings
-
-t_bool	nm_mach_wrap(t_mapping map, void const *addr, t_out out,
-		t_list *arch)
-{
-	t_bool	success;
-
-	success = true;
-	/*
-	if ((type = get_file_type(map, map.addr)) == E_FILE_MACH_O)
-	{
-
-	}
-	else if ((type = get_file_type(map, map.addr)) == E_FILE_MACH_O_64)
-	{
-
-	}
-	else
-	{
-		return (false);
-	}
-	*/
-	printf("nm_mach_wrap\n");
-	return (true);
-}
-
-t_bool	nm_ar_wrap(t_mapping map, void const *addr, t_out out, t_list *arch)
+t_bool	nm_ar_wrap(t_mapping map, t_out out, t_list *arch)
 {
 	if (!ar_iter(map))
 		return (false);
@@ -83,5 +57,16 @@ t_bool	nm_fat_wrap(t_mapping map, t_out out, t_env env)
 			ft_putchar_fd(10, 2);
 		return (success);
 		*/
+	printf("nm_fat_wrap\n");
 	return (false);
+}
+
+t_bool	nm_fat64_wrap(t_mapping map, t_out out, t_env env)
+{
+	t_bool	success;
+
+	success = true;
+
+	printf("nm_fat64_wrap\n");
+	return (success);
 }

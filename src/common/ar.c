@@ -90,6 +90,14 @@ static void	obj_dump(t_mapping obj)
 		ft_hexdump(obj.addr, obj.size);
 }
 
+t_file	ft_ar_is_ar(t_mapping map)
+{
+	if (is_large_enough(map, map.addr, SARMAG) &&
+			ft_memcmp(map.addr, ARMAG, SARMAG) == 0)
+		return (E_FILE_AR);
+	return (E_FILE_INVALID);
+}
+
 t_bool	ar_iter(t_mapping ar)
 {
 	struct ar_hdr const	*current;

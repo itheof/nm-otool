@@ -16,6 +16,7 @@
 # include <mach-o/fat.h>
 # include <mach-o/loader.h>
 # include <stdlib.h>
+# include <sys/types.h>
 # include "libft/stdbool.h"
 # include "libft/list.h"
 
@@ -79,15 +80,41 @@ typedef struct	s_ar_obj
 	t_bool				is_ext;
 }				t_ar_obj;
 
+typedef struct	s_mach
+{
+	t_bool		is_64;
+	struct mach_header_64 const	*header;
+	struct load_command	const	*lc_start;
+}				t_mach;
+
 typedef uint32_t	t_magic;
 
 typedef t_bool		(*t_arch_fun)(t_mapping map, void const *addr, t_out out);
 
+/* FAT */
+
 t_list	*fat_init(t_mapping map, t_bool all_archs, t_list *archs);
 t_bool	fat_iter(t_list *lst, t_arch_fun f, t_mapping map, t_out out);
 void	fat_deinit(t_list *lst);
+t_file	ft_fat_is_fat(t_mapping map);
+
+/*
+ * AR
+ */
 
 t_bool	ar_iter(t_mapping ar);
+t_file	ft_ar_is_ar(t_mapping map);
+
+/*
+ * Mach-O
+ */
+
+t_bool	ft_mach_init(t_mach *dst, t_mapping map, t_file type);
+t_file	ft_mach_is_mach_o(t_mapping map);
+
+/*
+ * debug
+ */
 
 void	ft_perror(char const *name);
 void	ft_puterr(char const *prefix, char const *msg);
@@ -100,12 +127,11 @@ t_bool	is_large_enough(t_mapping map, void const *addr, size_t size);
 t_bool	is_eof(t_mapping map, void const *addr);
 off_t	map_get_offset(t_mapping map, void const *addr);
 
-t_file	get_file_type(t_mapping map, void const *addr);
+t_file	get_file_type(t_mapping map);
 
 t_bool	arch_add_default(t_list **dst);
 t_err	arch_push_arg(t_list **lsth, char const *arg);
 void	arch_deinit(t_list *archs);
 t_bool	arch_fatal_err(char const *name, t_list *archs, char const *arg,
 		t_err err);
-
 #endif

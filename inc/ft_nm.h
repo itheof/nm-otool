@@ -25,9 +25,10 @@ typedef struct	s_env
 }				t_env;
 
 t_bool	nm_fat_wrap(t_mapping map, t_out out, t_env env);
-t_bool	nm_ar_wrap(t_mapping map, void const *addr, t_out out, t_list *arch);
-t_bool	nm_mach_wrap(t_mapping map, void const *addr, t_out out,
-		t_list *arch);
+t_bool	nm_fat64_wrap(t_mapping map, t_out out, t_env env);
+t_bool	nm_ar_wrap(t_mapping map, t_out out, t_list *arch);
+t_bool	nm_mach_wrap(t_mapping map, t_out out, t_list *arch);
+t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch);
 t_bool	nm_init_env(int *ac, char const **av[], t_env *env);
 
 #endif

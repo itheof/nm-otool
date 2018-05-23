@@ -47,3 +47,8 @@ void	fat_deinit(t_list *lst)
 	}
 }
 */
+
+t_file	ft_fat_is_fat(t_mapping map)
+{
+	return (E_FILE_INVALID);
+}

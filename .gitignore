@@ -56,3 +56,4 @@ dkms.conf
 # Vim buffer
 .*.swp
 Session.vim
+.color_coded
