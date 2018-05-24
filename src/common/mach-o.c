@@ -50,7 +50,7 @@ static t_bool	ft_mach_validate_lc(t_mach *dst)
 	while (n < dst->header->ncmds)
 	{
 		if (remaining < sizeof(*current))
-			return (ft_mach_err_lc_lt_sizeofcmds(n));
+			return (ft_mach_err_lc_past_all_cmds(n));
 		else if (current->cmdsize & (0x08 - 1))
 			return (ft_mach_err_lc_size_not_aligned(n));
 		else if (current->cmdsize < sizeof(*current))
@@ -60,7 +60,13 @@ static t_bool	ft_mach_validate_lc(t_mach *dst)
 			return (ft_mach_err_lc_lt_sizeofcmds(n));*/
 		else
 		{
-			remaining -= current->cmdsize;
+			//ft_mach_handle_lc
+			
+			/* get the next load_command */
+			if (current->cmdsize > remaining)
+				remaining = 0;
+			else
+				remaining -= current->cmdsize;
 			current = (struct load_command const *)((char const *)current + 
 					current->cmdsize);
 		}

@@ -19,7 +19,7 @@ t_bool	ft_mach_err_sizeofcmds_lt_file(void)
 	return (false);
 }
 
-t_bool	ft_mach_err_lc_lt_sizeofcmds(uint32_t index)
+t_bool	ft_mach_err_lc_past_all_cmds(uint32_t index)
 {
 	t_buffer	buf;
 

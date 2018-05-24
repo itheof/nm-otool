@@ -20,7 +20,7 @@
 
 # define OBJ_INVALID "truncated or malformed object"
 t_bool	ft_mach_err_sizeofcmds_lt_file(void);
-t_bool	ft_mach_err_lc_lt_sizeofcmds(uint32_t index);
+t_bool	ft_mach_err_lc_past_all_cmds(uint32_t index);
 t_bool	ft_mach_err_lc_lt_8(uint32_t index);
 t_bool	ft_mach_err_lc_size_not_aligned(uint32_t index);
 
