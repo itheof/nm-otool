@@ -32,7 +32,47 @@ static void	ft_mach_dump_mach_header(struct mach_header_64 const *hdr)
 size
 */
 
-static t_bool	ft_mach_validate_lc(t_mach *dst)
+static void		ft_mach_lc_dump(struct load_command const *lc, uint32_t max_len)
+{
+	size_t	len;
+
+	if (lc->cmdsize <= max_len)
+		len = lc->cmdsize;
+	else
+		return ; // this is a corrupt object
+	ft_hexdump((const char *)lc, len);
+}
+
+static t_bool	ft_mach_register_symtab(t_mach *dst,
+		struct symtab_command const *lc)
+{
+	dst->symtab_lc = lc;
+	return (true);
+}
+
+static t_bool	ft_mach_check_lc_size(struct load_command const *lc,
+		uint32_t max_len)
+{
+	if (lc->cmdsize > max_len)
+	{
+		OBJ_ERROR("Malformed MachO file.")
+		return (false);
+	}
+	else
+		return (true);
+}
+
+static t_bool	ft_mach_switch_lc(t_mach *dst, struct load_command const *lc,
+		uint32_t max_len)
+{
+	if (lc->cmd == LC_SYMTAB)
+		return (ft_mach_check_lc_size(lc, max_len) &&
+			ft_mach_register_symtab(dst, (struct symtab_command const *)lc));
+	else
+		return (true);
+}
+
+static t_bool	ft_mach_register_lc(t_mach *dst)
 {
 	uint32_t					remaining;
 	uint32_t					n;
@@ -43,6 +83,7 @@ static t_bool	ft_mach_validate_lc(t_mach *dst)
 	else
 		dst->lc_start = (struct load_command const *)(
 				(char const *)dst->header - sizeof(struct mach_header));
+	dst->symtab_lc = NULL;
 
 	remaining = dst->header->sizeofcmds;
 	current = dst->lc_start;
@@ -60,8 +101,9 @@ static t_bool	ft_mach_validate_lc(t_mach *dst)
 			return (ft_mach_err_lc_lt_sizeofcmds(n));*/
 		else
 		{
-			//ft_mach_handle_lc
-			
+			if (!ft_mach_switch_lc(dst, current, remaining))
+				return (false);
+
 			/* get the next load_command */
 			if (current->cmdsize > remaining)
 				remaining = 0;
@@ -75,7 +117,96 @@ static t_bool	ft_mach_validate_lc(t_mach *dst)
 	return (true);
 }
 
-static t_bool	ft_mach_validate_mach_hdr(t_mach *dst, t_mapping map)
+/*
+       U (undefined),
+	   A (absolute),
+	   T (text section symbol),
+	   D (data section symbol),
+	   B (bss section symbol),
+	   C (common symbol),
+	   S (symbol in a section other than those above)
+	   I (indirect symbol)
+       (non-external),  the  symbol's  type  is instead represented by the corresponding lowercase letter.  A lower case u in a dynamic shared library indicates a
+       undefined reference to a private external in another module in the same library.
+*/
+
+static char		stab_get_letter(t_mach *dst, uint8_t n_type, uint8_t n_sect)
+{
+	char lowercase;
+
+	lowercase = (n_type & (N_PEXT | N_EXT)) ? 0 : 'a' - 'A';
+	if ((n_type & N_TYPE) == N_UNDF)
+		return ('U' + lowercase);
+	else if ((n_type & N_TYPE) == N_ABS)
+		return ('A' + lowercase);
+	else if ((n_type & N_TYPE) == N_SECT)
+	{
+		if (n_sect == NO_SECT)
+			return ('S');
+		
+	}
+	else if ((n_type & N_TYPE) == N_PBUD)
+		return ('?'); // TODO What is this even ?
+	else if ((n_type & N_TYPE) == N_INDR)
+		return ('I');
+}
+
+static void		entry_output(t_mach *dst, struct nlist const *a,struct nlist_64 const *b)
+{
+	if (dst->is_64)
+	{
+		if (b->n_un.n_strx != 0 && !(b->n_type & N_STAB)) // filter debug syms
+		{
+			if (b->n_value)
+				printf("%.16zx %c %s\n", (void*)b->n_value, stab_get_letter(b->n_type), dst->strtab + b->n_un.n_strx);
+			else
+				printf("%16c %c %s\n", ' ', stab_get_letter(b->n_type), dst->strtab + b->n_un.n_strx);
+		}
+	}
+	else
+		;//TODO
+}
+
+static t_bool	ft_mach_load_symtab(t_mach *dst, t_mapping map)
+{
+	size_t	symsize;
+	size_t	nlistsize;
+
+	if (dst->is_64)
+		nlistsize = sizeof(*dst->symtab.b64);
+	else
+		nlistsize = sizeof(*dst->symtab.b32);
+	symsize = dst->symtab_lc->nsyms * nlistsize;
+	/* test map.addr overflow, bad offset and so on*/
+	if (!is_large_enough(map, (char const *)map.addr + dst->symtab_lc->symoff,
+				symsize))
+		return (false /* plus error message*/);
+	dst->symtab.b64 = (void *)((char const *)map.addr + dst->symtab_lc->symoff);
+	/* check alignement ^ */
+
+	if (!is_large_enough(map, (char const *)map.addr + dst->symtab_lc->stroff,
+				dst->symtab_lc->strsize))
+		return (false /* plus error message */);
+	dst->strtab = (char const *)map.addr + dst->symtab_lc->stroff;
+
+	for (int i = 0; i < dst->symtab_lc->nsyms; i++)
+	{
+		entry_output(dst, dst->symtab.b32 + i, dst->symtab.b64 + i);
+	}
+	return (true);
+}
+
+static t_bool	ft_mach_load(t_mach *dst, t_mapping map)
+{
+	/* load symtable */
+	if (dst->symtab_lc != NULL && !ft_mach_load_symtab(dst, map))
+		return (false);
+	else
+		;/* exec other load cmds */
+	return (true);
+}
+
+static t_bool	ft_mach_register_mach_hdr(t_mach *dst, t_mapping map)
 {
 	dst->header = map.addr;
 	//ft_mach_dump_mach_header(dst->header);
@@ -101,9 +232,12 @@ t_file	ft_mach_is_mach_o(t_mapping map)
 
 t_bool	ft_mach_init(t_mach *dst, t_mapping map, t_file type)
 {
+	if (!ft_mach_register_mach_hdr(dst, map))
+		return (false);
 	dst->is_64 = (type == E_FILE_MACH_O_64);
-	if (!ft_mach_validate_mach_hdr(dst, map) ||
-			!ft_mach_validate_lc(dst))
+	if (!ft_mach_register_lc(dst))
+		return (false);
+	if (!ft_mach_load(dst, map))
 		return (false);
 	return (true);
 }

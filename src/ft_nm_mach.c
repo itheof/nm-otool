@@ -32,7 +32,6 @@ t_bool	nm_mach_wrap(t_mapping map, t_out out, t_list *arch)
 		return (false);
 	}
 	*/
-	printf("nm_mach_wrap\n");
 	return (true);
 }
 
@@ -42,10 +41,7 @@ t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 	t_mach	current;
 
 	success = true;
-	//printf("nm_mach64_wrap: %s size %zu sizeof %zu \n", map.path, map.size,
-			//sizeof(*current.header));
 	if (!ft_mach_init(&current, map, E_FILE_MACH_O_64))
 		return (false);
-	//printf("");
 	return (true);
 }

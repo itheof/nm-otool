@@ -95,4 +95,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re check tests
+.PHONY: all clean fclean re check tests $(LIBFT)

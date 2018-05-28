@@ -15,6 +15,7 @@
 
 # include <mach-o/fat.h>
 # include <mach-o/loader.h>
+# include <mach-o/nlist.h>
 # include <stdlib.h>
 # include <sys/types.h>
 # include "libft/stdbool.h"
@@ -82,10 +83,17 @@ typedef struct	s_ar_obj
 
 typedef struct	s_mach
 {
-	t_bool		is_64;
+	t_bool						is_64;
 	struct mach_header_64 const	*header;
 	struct load_command	const	*lc_start;
-}				t_mach;
+	struct symtab_command const	*symtab_lc;
+
+	char const 					*strtab;
+	union {
+		struct nlist const		*b32;
+		struct nlist_64 const	*b64;
+	} 							symtab;
+}								t_mach;
 
 typedef uint32_t	t_magic;
 

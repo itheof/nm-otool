@@ -19,6 +19,13 @@
 # include "common.h"
 
 # define OBJ_INVALID "truncated or malformed object"
+
+
+# define LLVM_ERROR(x) dprintf(2, "LLVM ERROR: %s\n", x);
+# define FT_NM_ERROR(x) ft_puterr(NULL, "Mach-O error: " x);
+
+# define OBJ_ERROR(x) LLVM_ERROR(x)
+
 t_bool	ft_mach_err_sizeofcmds_lt_file(void);
 t_bool	ft_mach_err_lc_past_all_cmds(uint32_t index);
 t_bool	ft_mach_err_lc_lt_8(uint32_t index);
