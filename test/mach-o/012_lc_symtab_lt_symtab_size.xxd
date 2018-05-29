@@ -3,7 +3,7 @@ cffa edfe #magic
 0300 0080 #cpusubtype
 0200 0000 #filetype
 0100 0000 #ncmds
-0800 0000 #huge sizeofcmds
+0800 0000 #sizeofcmds
 8500 2000 #flags
 0000 0000 #reserved
 

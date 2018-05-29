@@ -12,6 +12,12 @@
 
 #include "ft_mach.h"
 
+static char	const	*cmd_lookup[BIGGEST_CMD_NUM] = {
+	[LC_SYMTAB] = "LC_SYMTAB",
+	[LC_SEGMENT] = "LC_SEGMENT",
+	[LC_SEGMENT_64] = "LC_SEGMENT_64"
+};
+
 t_bool	ft_mach_err_sizeofcmds_lt_file(void)
 {
 	ft_puterr(NULL, OBJ_INVALID
@@ -35,6 +41,42 @@ t_bool	ft_mach_err_lc_past_all_cmds(uint32_t index)
 	return (false);
 
 }
+
+t_bool	ft_mach_err_lc_size_lt_cmd(uint32_t index, uint32_t cmd)
+{
+	t_buffer			buf;
+
+	if (buffer_init(&buf))
+	{
+		buffer_cat(&buf, OBJ_INVALID " (load command ");
+		buffer_cat_num(&buf, index);
+		buffer_cat(&buf, " ");
+		buffer_cat(&buf, cmd_lookup[cmd]);
+		buffer_cat(&buf,
+				" cmdsize too small)");
+		ft_puterr(NULL, buf.str);
+		buffer_deinit(&buf);
+	}
+	return (false);
+}
+
+t_bool	ft_mach_err_lc_size_neq_cmd(uint32_t index, uint32_t cmd)
+{
+	t_buffer			buf;
+
+	if (buffer_init(&buf))
+	{
+		buffer_cat(&buf, OBJ_INVALID " (");
+		buffer_cat(&buf, cmd_lookup[cmd]);
+		buffer_cat(&buf, " command ");
+		buffer_cat_num(&buf, index);
+		buffer_cat(&buf, " has incorrect cmdsize)");
+		ft_puterr(NULL, buf.str);
+		buffer_deinit(&buf);
+	}
+	return (false);
+}
+
 
 t_bool	ft_mach_err_lc_size_not_aligned(uint32_t index)
 {

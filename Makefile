@@ -19,7 +19,8 @@ CFLAGS    += -I./inc
 COM_SOURCES = common/misc.c common/file.c common/fat.c common/fat_init.c \
 			  common/type.c common/arch.c ft_nm_show_symbols.c common/ar.c \
 			  common/ar_err.c common/ar_tools.c ft_nm_parse_opt.c ft_nm_mach.c \
-			  common/mach-o.c common/mach-o_err.c
+			  common/mach-o.c common/mach-o_err.c common/is_mach_o.c  ft_nm_output.c \
+			  common/mach_o_lc.c common/mach_o_symtab.c
 
 # Sources
 SRC_PATH    = src
