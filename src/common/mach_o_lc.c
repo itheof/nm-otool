@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/29 12:05:09 by tvallee           #+#    #+#             */
-/*   Updated: 2018/05/29 12:08:27 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/05/29 15:40:29 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,15 @@ static t_bool	ft_mach_switch_lc(t_mach *dst, struct load_command const *lc,
 					sizeof(struct symtab_command), index) &&
 			ft_mach_register_symtab(dst, (struct symtab_command const *)lc, index));
 	else if (lc->cmd == LC_SEGMENT && !dst->is_64)
-		return (true);
+		return (ft_mach_check_lc_size(lc, max_len,
+					sizeof(struct segment_command), index) &&
+			ft_mach_register_segment(dst, (struct segment_command const *)lc, index, max_len));
 	else if (lc->cmd == LC_SEGMENT_64 && dst->is_64)
-		return (true);
+	{
+		return (ft_mach_check_lc_size(lc, max_len,
+					sizeof(struct segment_command_64), index) &&
+			ft_mach_register_segment_64(dst, (struct segment_command_64 const *)lc, index, max_len));
+	}
 	return (true);
 }
 

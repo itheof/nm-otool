@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/30 15:23:22 by tvallee           #+#    #+#             */
-/*   Updated: 2018/05/29 12:14:21 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/05/29 15:29:57 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,27 @@ static void	ft_mach_dump_mach_header(struct mach_header_64 const *hdr)
 
 static t_bool	ft_mach_load(t_mach *dst, t_mapping map)
 {
+	int i;
+
 	/* load symtable */
 	if (dst->symtab_lc != NULL && !ft_mach_load_symtab(dst, map))
 		return (false);
-	else
-		;/* exec other load cmds */
+	/*
+	i = 0;
+	while (dst->segment_lc[i].b64 != NULL)
+	{
+		if (dst->is_64)
+		{
+			if (!ft_mach_load_segment_64(dst, map, dst->segment_lc[i].b64))
+				return (false);
+		}
+		else
+		{
+			if (!ft_mach_load_segment(dst, map, dst->segment_lc[i].b32))
+				return (false);
+		}
+		i++;
+	}*/
 	return (true);
 }
 
@@ -51,6 +67,8 @@ t_bool	ft_mach_init(t_mach *dst, t_mapping map, t_file type)
 	if (!ft_mach_register_mach_hdr(dst, map))
 		return (false);
 	dst->is_64 = (type == E_FILE_MACH_O_64);
+	for (int i = 0; i < MAX_SECT; i++)
+		dst->sections[i].b64 = NULL;
 	if (!ft_mach_register_lc(dst))
 		return (false);
 	if (!ft_mach_load(dst, map))

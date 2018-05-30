@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/23 15:39:20 by tvallee           #+#    #+#             */
-/*   Updated: 2018/05/29 12:12:45 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/05/29 15:31:50 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,11 @@ t_bool	ft_mach_register_lc(t_mach *dst);
 t_bool	ft_mach_load_symtab(t_mach *dst, t_mapping map);
 t_bool	ft_mach_register_symtab(t_mach *dst, struct symtab_command const *lc,
 		uint32_t index);
+
+t_bool	ft_mach_register_segment(t_mach *dst, struct segment_command const *lc, uint32_t index, uint32_t max_len);
+t_bool	ft_mach_register_segment_64(t_mach *dst, struct segment_command_64 const *lc, uint32_t index, uint32_t max_len);
+t_bool	ft_mach_load_segment_64(t_mach *dst, t_mapping map,
+		struct segment_command_64 const *lc);
+t_bool	ft_mach_load_segment(t_mach *dst, t_mapping map,
+		struct segment_command const *lc);
 #endif

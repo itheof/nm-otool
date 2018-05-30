@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/04/26 11:04:12 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/05/29 15:05:06 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 
 # define DEFAULT_ARCH (void*)((char*)NULL - 1)
 # define ERR_INVALID "The file was not recognized as a valid object file"
+# define MAX_SEGMENTS 10
 
 typedef struct	s_mapping
 {
@@ -93,6 +94,18 @@ typedef struct	s_mach
 		struct nlist const		*b32;
 		struct nlist_64 const	*b64;
 	} 							symtab;
+
+	/* 0 indexed unlike sections indexes */
+	union {
+		struct section const	*b32;
+		struct section_64 const	*b64;
+	}							sections[MAX_SECT];
+	/*
+	** TEXT text
+	** DATA data
+	** DATA bss
+	** DATA common
+	*/
 }								t_mach;
 
 typedef uint32_t	t_magic;
@@ -142,4 +155,6 @@ t_err	arch_push_arg(t_list **lsth, char const *arg);
 void	arch_deinit(t_list *archs);
 t_bool	arch_fatal_err(char const *name, t_list *archs, char const *arg,
 		t_err err);
+
+char const *ft_mach_get_string_by_symbol(t_mach *dst, struct nlist_64 const *n);
 #endif

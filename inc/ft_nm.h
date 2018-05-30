@@ -30,5 +30,6 @@ t_bool	nm_ar_wrap(t_mapping map, t_out out, t_list *arch);
 t_bool	nm_mach_wrap(t_mapping map, t_out out, t_list *arch);
 t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch);
 t_bool	nm_init_env(int *ac, char const **av[], t_env *env);
+void	entry_output(t_mach *obj, struct nlist_64 const *n);
 
 #endif

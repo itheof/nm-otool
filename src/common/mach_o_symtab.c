@@ -21,6 +21,29 @@ t_bool	ft_mach_register_symtab(t_mach *dst,
 	return (true);
 }
 
+/* returns NULL if not enough space */
+char const *ft_mach_get_string_by_symbol(t_mach *dst, struct nlist_64 const *n)
+{
+	char const	*ret;
+	char const	*delim;
+
+	if (n->n_un.n_strx > dst->symtab_lc->strsize)
+		return (NULL);
+	ret = dst->strtab + n->n_un.n_strx;
+	if (ret < dst->strtab)
+		return (NULL); //overflow case
+
+	/* make sure the string table is null terminated */
+	delim = dst->strtab + dst->symtab_lc->strsize;
+	while (delim != dst->strtab)
+	{
+		if (!*delim)
+			return (ret);
+		delim--;
+	}
+	return (NULL);
+}
+
 t_bool	ft_mach_load_symtab(t_mach *dst, t_mapping map)
 {
 	size_t	symsize;
@@ -43,9 +66,5 @@ t_bool	ft_mach_load_symtab(t_mach *dst, t_mapping map)
 		return (false /* plus error message */);
 	dst->strtab = (char const *)map.addr + dst->symtab_lc->stroff;
 
-	for (int i = 0; i < dst->symtab_lc->nsyms; i++)
-	{
-		entry_output(dst, dst->symtab.b32 + i, dst->symtab.b64 + i);
-	}
 	return (true);
 }
