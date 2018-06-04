@@ -31,14 +31,23 @@ static inline t_bool	match(struct section_64 const *ptr, char const *seg, char c
 			!ft_strncmp(ptr->segname, seg, sizeof(ptr->segname)));
 }
 
-static char		get_letter(t_mach *obj, uint8_t n_type, uint8_t n_sect)
+//#define SECT_OBJC_SYMBOLS "__symbol_table"	/* symbol table */
+//#define SECT_OBJC_MODULES "__module_info"	/* module information */
+//#define SECT_OBJC_STRINGS "__selector_strs"	/* string table */
+//#define SECT_OBJC_REFS "__selector_refs"	/* string table */
+static char		get_letter(t_mach *obj, uint8_t n_type, uint8_t n_sect, t_bool null_value)
 {
 	char lowercase;
 	struct section_64 const *ptr;
 
-	lowercase = (n_type & (N_PEXT | N_EXT)) ? 0 : 'a' - 'A';
+	lowercase = (n_type & N_EXT) ? 0 : 'a' - 'A';
 	if ((n_type & N_TYPE) == N_UNDF)
-		return ('U' + lowercase);
+	{
+		if (n_type & N_PEXT && !null_value)
+			return ('C');
+		else
+			return ('U' + lowercase);
+	}
 	else if ((n_type & N_TYPE) == N_ABS)
 		return ('A' + lowercase);
 	else if ((n_type & N_TYPE) == N_SECT)
@@ -54,8 +63,8 @@ static char		get_letter(t_mach *obj, uint8_t n_type, uint8_t n_sect)
 			return ('D' + lowercase);
 		if (match(ptr, SEG_DATA, SECT_BSS))
 			return ('B' + lowercase);
-		if (match(ptr, SEG_DATA, SECT_COMMON))
-			return ('C' + lowercase);
+		/*if (ft_strcmp(ptr->segname, SEG_OBJC) && match(ptr, SEG_DATA, SECT_COMMON))
+			return ('C' + lowercase);*/
 		return ('S' + lowercase);
 	}
 	else if ((n_type & N_TYPE) == N_PBUD)
@@ -75,11 +84,11 @@ void		entry_output(t_mach *obj, struct nlist_64 const *n)
 		{
 			if (n->n_value)
 				printf("%.16zx %c %s\n", n->n_value,
-						get_letter(obj, n->n_type, n->n_sect),
+						get_letter(obj, n->n_type, n->n_sect, n->n_value == 0),
 						ft_mach_get_string_by_symbol(obj, n));
 			else
 				printf("%16c %c %s\n", ' ',
-						get_letter(obj, n->n_type, n->n_sect),
+						get_letter(obj, n->n_type, n->n_sect, n->n_value == 0),
 						ft_mach_get_string_by_symbol(obj, n));
 		}
 	}

@@ -57,7 +57,7 @@ static t_bool	map_regular_file(struct stat buf, t_mapping *map, int fd,
 			return (false);
 		}
 	}
-	map->_mallocd = false;
+	map->mallocd = false;
 	if (!buffer_init_with(&err, name))
 	{
 		PERROR("malloc");
@@ -119,7 +119,7 @@ t_bool			map_file(const char *path, t_mapping *map, const char *name)
 
 void	unmap_file(t_mapping *map)
 {
-	if (!map->_mallocd)
+	if (!map->mallocd)
 	{
 		munmap((void*)map->addr, map->size);
 	}

@@ -56,9 +56,11 @@ void	print_entries(t_mach *obj)
 		j = i + 1;
 		while (arr[j])
 		{
+			int ret;
 			//XXX: null strings
-			if (ft_strcmp(ft_mach_get_string_by_symbol(obj, arr[i]),
-						ft_mach_get_string_by_symbol(obj, arr[j])) > 0)
+			if ((ret = ft_strcmp(ft_mach_get_string_by_symbol(obj, arr[i]),
+						ft_mach_get_string_by_symbol(obj, arr[j]))) > 0 ||
+			   		(ret == 0 && arr[i]->n_value > arr[j]->n_value))
 			{
 				tmp = arr[i];
 				arr[i] = arr[j];
