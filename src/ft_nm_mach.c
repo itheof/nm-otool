@@ -12,6 +12,7 @@
 
 #include "ft_nm.h"
 #include "libft/print.h"
+#include "libft/libc.h"
 
 t_bool	nm_mach_wrap(t_mapping map, t_out out, t_list *arch)
 {
@@ -39,8 +40,8 @@ void	print_entries(t_mach *obj)
 {
 	struct nlist_64	const *(arr[obj->symtab_lc->nsyms + 1]);
 	struct nlist_64 const *tmp;
-	int i;
-	int j;
+	uint32_t	i;
+	uint32_t	j;
 	
 	for (i = 0; i < obj->symtab_lc->nsyms; i++)
 	{
@@ -87,7 +88,9 @@ t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 	success = true;
 	if (!ft_mach_init(&obj, map, E_FILE_MACH_O_64))
 		return (false);
-
-	print_entries(&obj);
+	if (obj.symtab_lc)
+	{
+		print_entries(&obj);
+	}
 	return (true);
 }

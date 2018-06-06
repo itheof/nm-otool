@@ -13,18 +13,23 @@
 #ifndef FT_AR_H
 # define FT_AR_H
 
-#include <ar.h>
-#include <mach-o/ranlib.h>
-#include "libft/libc.h"
-#include "libft/buffer.h"
-#include "libft/print.h"
-#include "common.h"
+# include <ar.h>
+# include <mach-o/ranlib.h>
+# include "libft/libc.h"
+# include "libft/buffer.h"
+# include "libft/print.h"
+# include "common.h"
 
 # define AR_INVALID "truncated or malformed archive"
 # define AR_NAME_SIZE sizeof(((struct ar_hdr*)(0))->ar_name)
 # define AR_SIZE_SIZE sizeof(((struct ar_hdr*)(0))->ar_size)
-# define SAR_EFMT1 (sizeof(AR_EFMT1) - 1) // for \0
-# define SARFMAG (sizeof(ARFMAG) - 1) // for \0
+
+/*
+** The below -1 is to remove the '\0' size
+*/
+
+# define SAR_EFMT1 (sizeof(AR_EFMT1) - 1)
+# define SARFMAG (sizeof(ARFMAG) - 1)
 
 t_bool	ar_err_non_digits_in_size();
 t_bool	ar_err_non_digits_in_long_name(off_t offset, char const *ar_name);

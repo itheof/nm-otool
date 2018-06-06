@@ -117,7 +117,7 @@ t_bool			map_file(const char *path, t_mapping *map, const char *name)
 	}
 }
 
-void	unmap_file(t_mapping *map)
+void			unmap_file(t_mapping *map)
 {
 	if (!map->mallocd)
 	{
@@ -125,17 +125,17 @@ void	unmap_file(t_mapping *map)
 	}
 }
 
-off_t	map_get_offset(t_mapping map, void const *addr)
+off_t			map_get_offset(t_mapping map, void const *addr)
 {
 	return ((char const *)addr - (char const *)map.addr);
 }
 
-t_bool	is_eof(t_mapping map, void const *addr)
+t_bool			is_eof(t_mapping map, void const *addr)
 {
 	return (map.size + (char const *)map.addr == addr);
 }
 
-t_bool	is_large_enough(t_mapping map, void const *addr, size_t size)
+t_bool			is_large_enough(t_mapping map, void const *addr, size_t size)
 {
 	size_t	offset;
 

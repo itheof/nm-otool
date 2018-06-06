@@ -25,7 +25,7 @@ void	ft_putout(t_out out)
 	{
 		if (out.path || out.arch_name || out.ar_name)
 		{
-			buffer_cat(&buf, out.path);	
+			buffer_cat(&buf, out.path);
 		}
 		if (out.ar_name)
 		{

@@ -11,31 +11,17 @@
 /* ************************************************************************** */
 
 #include "ft_nm.h"
+#include "libft/libc.h"
 
-/*
-       U (undefined),
-	   A (absolute),
-	   T (text section symbol),
-	   D (data section symbol),
-	   B (bss section symbol),
-	   C (common symbol),
-	   S (symbol in a section other than those above)
-	   I (indirect symbol)
-       (non-external),  the  symbol's  type  is instead represented by the corresponding lowercase letter.  A lower case u in a dynamic shared library indicates a
-       undefined reference to a private external in another module in the same library.
-*/
-
-static inline t_bool	match(struct section_64 const *ptr, char const *seg, char const *sect)
+static inline t_bool	match(struct section_64 const *ptr, char const *seg,
+		char const *sect)
 {
 	return (!ft_strncmp(ptr->sectname, sect, sizeof(ptr->sectname)) &&
 			!ft_strncmp(ptr->segname, seg, sizeof(ptr->segname)));
 }
 
-//#define SECT_OBJC_SYMBOLS "__symbol_table"	/* symbol table */
-//#define SECT_OBJC_MODULES "__module_info"	/* module information */
-//#define SECT_OBJC_STRINGS "__selector_strs"	/* string table */
-//#define SECT_OBJC_REFS "__selector_refs"	/* string table */
-static char		get_letter(t_mach *obj, uint8_t n_type, uint8_t n_sect, t_bool null_value)
+static char		get_letter(t_mach *obj, uint8_t n_type, uint8_t n_sect,
+		t_bool null_value)
 {
 	char lowercase;
 	struct section_64 const *ptr;
@@ -63,16 +49,10 @@ static char		get_letter(t_mach *obj, uint8_t n_type, uint8_t n_sect, t_bool null
 			return ('D' + lowercase);
 		if (match(ptr, SEG_DATA, SECT_BSS))
 			return ('B' + lowercase);
-		/*if (ft_strcmp(ptr->segname, SEG_OBJC) && match(ptr, SEG_DATA, SECT_COMMON))
-			return ('C' + lowercase);*/
 		return ('S' + lowercase);
 	}
-	else if ((n_type & N_TYPE) == N_PBUD)
-		return ('?'); // TODO What is this even ?
 	else if ((n_type & N_TYPE) == N_INDR)
 		return ('I' + lowercase);
-	else
-		return (0);
 	return ('?');
 }
 
@@ -95,4 +75,3 @@ void		entry_output(t_mach *obj, struct nlist_64 const *n)
 	else
 		;//TODO
 }
-

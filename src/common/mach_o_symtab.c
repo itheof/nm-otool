@@ -12,7 +12,7 @@
 
 #include "ft_mach.h"
 
-t_bool	ft_mach_register_symtab(t_mach *dst,
+t_bool		ft_mach_register_symtab(t_mach *dst,
 		struct symtab_command const *lc, uint32_t index)
 {
 	if (lc->cmdsize != sizeof(*lc))
@@ -21,8 +21,11 @@ t_bool	ft_mach_register_symtab(t_mach *dst,
 	return (true);
 }
 
-/* returns NULL if not enough space */
-char const *ft_mach_get_string_by_symbol(t_mach *dst, struct nlist_64 const *n)
+/*
+** v returns NULL if not enough space
+*/
+
+char const	*ft_mach_get_string_by_symbol(t_mach *dst, struct nlist_64 const *n)
 {
 	char const	*ret;
 	char const	*delim;
@@ -31,9 +34,7 @@ char const *ft_mach_get_string_by_symbol(t_mach *dst, struct nlist_64 const *n)
 		return (NULL);
 	ret = dst->strtab + n->n_un.n_strx;
 	if (ret < dst->strtab)
-		return (NULL); //overflow case
-
-	/* make sure the string table is null terminated */
+		return (NULL);
 	delim = dst->strtab + dst->symtab_lc->strsize;
 	while (delim != dst->strtab)
 	{
@@ -44,7 +45,11 @@ char const *ft_mach_get_string_by_symbol(t_mach *dst, struct nlist_64 const *n)
 	return (NULL);
 }
 
-t_bool	ft_mach_load_symtab(t_mach *dst, t_mapping map)
+/*
+** ln38: make sure the string table is null terminated
+*/
+
+t_bool		ft_mach_load_symtab(t_mach *dst, t_mapping map)
 {
 	size_t	symsize;
 	size_t	nlistsize;
@@ -54,17 +59,15 @@ t_bool	ft_mach_load_symtab(t_mach *dst, t_mapping map)
 	else
 		nlistsize = sizeof(*dst->symtab.b32);
 	symsize = dst->symtab_lc->nsyms * nlistsize;
-	/* test map.addr overflow, bad offset and so on*/
 	if (!is_large_enough(map, (char const *)map.addr + dst->symtab_lc->symoff,
 				symsize))
-		return (false /* plus error message*/);
+		return (ft_mach_err_symtab_gt_file());
 	dst->symtab.b64 = (void *)((char const *)map.addr + dst->symtab_lc->symoff);
-	/* check alignement ^ */
-
+	if ((size_t)dst->symtab.b64 & (sizeof(void*) - 1))
+		return (ft_mach_err_symtab_not_aligned());
 	if (!is_large_enough(map, (char const *)map.addr + dst->symtab_lc->stroff,
 				dst->symtab_lc->strsize))
-		return (false /* plus error message */);
+		return (ft_mach_err_strtab_gt_file());
 	dst->strtab = (char const *)map.addr + dst->symtab_lc->stroff;
-
 	return (true);
 }

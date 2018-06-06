@@ -12,42 +12,13 @@
 
 #include "ft_mach.h"
 
-t_bool	ft_mach_load_segment_64(t_mach *dst, t_mapping map,
-		struct segment_command_64 const *lc)
+t_bool			ft_mach_register_segment(t_mach *dst,
+		struct segment_command const *lc, uint32_t index, uint32_t max_len)
 {
-	
-}
-
-t_bool	ft_mach_load_segment(t_mach *dst, t_mapping map,
-		struct segment_command const *lc)
-{
-
-}
-
-t_bool	ft_mach_register_segment(t_mach *dst, struct segment_command const *lc, uint32_t index, uint32_t max_len)
-{
-	/*
-	int i;
-	
-	if (lc->cmdsize != sizeof(*lc))
-		return (ft_mach_err_lc_size_neq_cmd(index, lc->cmd));
-	i = 0;
-	while (dst->segment_lc[i].b32 != NULL)
-	{
-		i++;
-		if (i == MAX_SEGMENTS)
-		{
-			ft_puterr(NULL, "unsupported binary with more than 9 segment commands");
-			return (false); // we just wont handle this.
-		}
-	}
-	dst->segment_lc[i].b32 = lc;
-	*/
 	return (true);
-
 }
 
-static t_bool register_section_64(t_mach *dst, struct section_64 const *s)
+static t_bool	register_section_64(t_mach *dst, struct section_64 const *s)
 {
 	uint8_t i;
 
@@ -58,16 +29,15 @@ static t_bool register_section_64(t_mach *dst, struct section_64 const *s)
 		if (i == MAX_SECT)
 		{
 			ft_puterr(NULL, "unsupported binary with more than 255 sections");
-			return (false); // we just wont handle this.
+			return (false);
 		}
 	}
 	dst->sections[i].b64 = s;
-	//printf("%s %s\n", dst->sections[i].b64->segname, dst->sections[i].b64->sectname);
 	return (true);
 }
 
-t_bool	ft_mach_register_segment_64(t_mach *dst, struct segment_command_64 const *lc,
-		uint32_t index, uint32_t max_len)
+t_bool			ft_mach_register_segment_64(t_mach *dst,
+		struct segment_command_64 const *lc, uint32_t index, uint32_t max_len)
 {
 	uint32_t	i;
 

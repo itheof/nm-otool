@@ -13,9 +13,9 @@
 #ifndef FT_NM_H
 # define FT_NM_H
 
-#include "common.h"
-#include "libft/list.h"
-#include "libft/stdbool.h"
+# include "common.h"
+# include "libft/list.h"
+# include "libft/stdbool.h"
 
 typedef struct	s_env
 {
@@ -24,12 +24,12 @@ typedef struct	s_env
 	t_list		*archs;
 }				t_env;
 
-t_bool	nm_fat_wrap(t_mapping map, t_out out, t_env env);
-t_bool	nm_fat64_wrap(t_mapping map, t_out out, t_env env);
-t_bool	nm_ar_wrap(t_mapping map, t_out out, t_list *arch);
-t_bool	nm_mach_wrap(t_mapping map, t_out out, t_list *arch);
-t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch);
-t_bool	nm_init_env(int *ac, char const **av[], t_env *env);
-void	entry_output(t_mach *obj, struct nlist_64 const *n);
+t_bool			nm_fat_wrap(t_mapping map, t_out out, t_env env);
+t_bool			nm_fat64_wrap(t_mapping map, t_out out, t_env env);
+t_bool			nm_ar_wrap(t_mapping map, t_out out, t_list *arch);
+t_bool			nm_mach_wrap(t_mapping map, t_out out, t_list *arch);
+t_bool			nm_mach64_wrap(t_mapping map, t_out out, t_list *arch);
+t_bool			nm_init_env(int *ac, char const **av[], t_env *env);
+void			entry_output(t_mach *obj, struct nlist_64 const *n);
 
 #endif

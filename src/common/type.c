@@ -20,10 +20,13 @@
 t_file	get_file_type(t_mapping map)
 {
 	t_file	type;
-	
-	if ((type = ft_ar_is_ar(map)) != E_FILE_INVALID);
-	else if ((type = ft_fat_is_fat(map)) != E_FILE_INVALID);
-	else if ((type = ft_mach_is_mach_o(map)) != E_FILE_INVALID);
+
+	if ((type = ft_ar_is_ar(map)) != E_FILE_INVALID)
+		;
+	else if ((type = ft_fat_is_fat(map)) != E_FILE_INVALID)
+		;
+	else if ((type = ft_mach_is_mach_o(map)) != E_FILE_INVALID)
+		;
 	else
 		return (E_FILE_INVALID);
 	return (type);

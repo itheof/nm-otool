@@ -12,7 +12,7 @@
 
 #include "ft_mach.h"
 
-static void	ft_mach_dump_mach_header(struct mach_header_64 const *hdr)
+static void		ft_mach_dump_mach_header(struct mach_header_64 const *hdr)
 {
 	dprintf(2,
 		"struct mach_header {\n"
@@ -29,46 +29,30 @@ static void	ft_mach_dump_mach_header(struct mach_header_64 const *hdr)
 
 static t_bool	ft_mach_load(t_mach *dst, t_mapping map)
 {
-	int i;
-
-	/* load symtable */
 	if (dst->symtab_lc != NULL && !ft_mach_load_symtab(dst, map))
 		return (false);
-	/*
-	i = 0;
-	while (dst->segment_lc[i].b64 != NULL)
-	{
-		if (dst->is_64)
-		{
-			if (!ft_mach_load_segment_64(dst, map, dst->segment_lc[i].b64))
-				return (false);
-		}
-		else
-		{
-			if (!ft_mach_load_segment(dst, map, dst->segment_lc[i].b32))
-				return (false);
-		}
-		i++;
-	}*/
 	return (true);
 }
 
 static t_bool	ft_mach_register_mach_hdr(t_mach *dst, t_mapping map)
 {
 	dst->header = map.addr;
-	//ft_mach_dump_mach_header(dst->header);
 	if (!is_large_enough(map, dst->header + 1, dst->header->sizeofcmds))
 		return (ft_mach_err_sizeofcmds_lt_file());
 	return (true);
 }
 
-t_bool	ft_mach_init(t_mach *dst, t_mapping map, t_file type)
+t_bool			ft_mach_init(t_mach *dst, t_mapping map, t_file type)
 {
+	int i;
+
+	i = 0;
 	if (!ft_mach_register_mach_hdr(dst, map))
 		return (false);
 	dst->is_64 = (type == E_FILE_MACH_O_64);
-	for (int i = 0; i < MAX_SECT; i++)
-		dst->sections[i].b64 = NULL;
+	while (i < MAX_SECT)
+		dst->sections[i++].b64 = NULL;
+	dst->symtab_lc = NULL;
 	if (!ft_mach_register_lc(dst))
 		return (false);
 	if (!ft_mach_load(dst, map))

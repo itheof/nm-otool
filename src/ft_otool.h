@@ -1,26 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_otool.c                                         :+:      :+:    :+:   */
+/*   ft_otool.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/02 22:56:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/20 11:59:20 by tvallee          ###   ########.fr       */
+/*   Created: 2018/06/06 15:12:43 by tvallee           #+#    #+#             */
+/*   Updated: 2018/06/06 15:13:36 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
+#ifndef FT_OTOOL_H
+# define FT_OTOOL_H
 
-/*
-static void	usage(const char *name)
-{
-	ft_putstr_fd("usage: ", 2);
-	ft_putstr_fd(name, 2);
-	ft_putendl_fd(" [-t] file...", 2);
-}
-*/
+#include "common.h"
 
-int			main(int ac, char const *av[])
-{
-}
+#endif
