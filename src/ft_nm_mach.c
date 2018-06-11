@@ -6,58 +6,51 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/21 16:16:55 by tvallee           #+#    #+#             */
-/*   Updated: 2018/05/28 15:50:26 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 13:35:30 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 #include "libft/print.h"
 #include "libft/libc.h"
+#include "libft/buffer.h"
 
-t_bool	nm_mach_wrap(t_mapping map, t_out out, t_list *arch)
+static void	print_out(t_out out)
 {
-	t_bool	success;
+	t_buffer	buf;
 
-	success = true;
-	/*
-	if ((type = get_file_type(map, map.addr)) == E_FILE_MACH_O)
+	if (out.multifile || out.ar_name || out.arch_name)
 	{
-
+		if (buffer_init(&buf))
+		{
+			buffer_cat(&buf, "\n");
+			buffer_cat(&buf, out.path);
+			if (out.ar_name)
+			{
+				buffer_cat(&buf, "(");
+				buffer_cat(&buf, out.ar_name);
+				buffer_cat(&buf, ")");
+			}
+			buffer_cat(&buf, ":");
+			ft_putendl(buf.str);
+			buffer_deinit(&buf);
+		}
 	}
-	else if ((type = get_file_type(map, map.addr)) == E_FILE_MACH_O_64)
-	{
-
-	}
-	else
-	{
-		return (false);
-	}
-	*/
-	return (true);
 }
 
-void	print_entries(t_mach *obj)
+static void	sort_entries(t_mach *obj, struct nlist_64 const **arr)
 {
-	struct nlist_64	const *(arr[obj->symtab_lc->nsyms + 1]);
 	struct nlist_64 const *tmp;
 	uint32_t	i;
 	uint32_t	j;
+	int ret;
 	
-	for (i = 0; i < obj->symtab_lc->nsyms; i++)
-	{
-		if (obj->is_64)
-			arr[i] = obj->symtab.b64 + i;
-		else
-			arr[i] = (struct nlist_64 const *)(obj->symtab.b32 + i);
-	}
-	arr[i] = NULL;
 	i = 0;
 	while (arr[i])
 	{
 		j = i + 1;
 		while (arr[j])
 		{
-			int ret;
 			//XXX: null strings
 			if ((ret = ft_strcmp(ft_mach_get_string_by_symbol(obj, arr[i]),
 						ft_mach_get_string_by_symbol(obj, arr[j]))) > 0 ||
@@ -71,7 +64,10 @@ void	print_entries(t_mach *obj)
 		}
 		i++;
 	}
-	
+}
+
+static void	print_entries(t_mach *obj, struct nlist_64 const **arr)
+{
 	for (int i = 0; i < obj->symtab_lc->nsyms; i++)
 	{
 		const char *str = ft_mach_get_string_by_symbol(obj, arr[i]);
@@ -82,15 +78,60 @@ void	print_entries(t_mach *obj)
 
 t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 {
-	t_bool	success;
-	t_mach	obj;
+	struct nlist_64 const	**arr;
+	uint32_t				i;
+	t_mach					obj;
 
-	success = true;
 	if (!ft_mach_init(&obj, map, E_FILE_MACH_O_64))
 		return (false);
 	if (obj.symtab_lc)
 	{
-		print_entries(&obj);
+		if (!(arr = malloc(sizeof(*arr) * (obj.symtab_lc->nsyms + 1))))
+		{
+			PERROR("malloc");
+			return false;
+		}
+		i = 0;
+		while (i < obj.symtab_lc->nsyms)
+		{
+			arr[i] = obj.symtab.b64 + i;
+			i++;
+		}
+		arr[i] = NULL;
+		sort_entries(&obj, arr);
+		print_out(out);
+		print_entries(&obj, arr);
+		free(arr);
+	}
+	return (true);
+}
+
+t_bool	nm_mach_wrap(t_mapping map, t_out out, t_list *arch)
+{
+	struct nlist_64 const	**arr;
+	uint32_t				i;
+	t_mach					obj;
+
+	if (!ft_mach_init(&obj, map, E_FILE_MACH_O))
+		return (false);
+	if (obj.symtab_lc)
+	{
+		if (!(arr = malloc(sizeof(*arr) * (obj.symtab_lc->nsyms + 1))))
+		{
+			PERROR("malloc");
+			return false;
+		}
+		i = 0;
+		while (i < obj.symtab_lc->nsyms)
+		{
+			arr[i] = (struct nlist_64 const *)(obj.symtab.b32 + i);
+			i++;
+		}
+		arr[i] = NULL;
+		sort_entries(&obj, arr);
+		print_out(out);
+		print_entries(&obj, arr);
+		free(arr);
 	}
 	return (true);
 }

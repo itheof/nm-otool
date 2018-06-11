@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/29 12:05:09 by tvallee           #+#    #+#             */
-/*   Updated: 2018/05/29 15:40:29 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 11:58:25 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ static void		ft_mach_set_lc_start(t_mach *dst)
 	void const *ptr;
 
 	if (dst->is_64)
-		ptr = (struct mach_header_64 const *)dst->header + 1;
+		ptr = dst->header.b64 + 1;
 	else
-		ptr = (struct mach_header const *)dst->header + 1;
+		ptr = dst->header.b32 + 1;
 	dst->lc_start = (struct load_command const *)ptr;
 }
 
@@ -69,14 +69,14 @@ t_bool			ft_mach_register_lc(t_mach *dst)
 	struct load_command const	*current;
 
 	ft_mach_set_lc_start(dst);
-	remaining = dst->header->sizeofcmds;
+	remaining = dst->header.b64->sizeofcmds;
 	current = dst->lc_start;
 	n = 0;
-	while (n < dst->header->ncmds)
+	while (n < dst->header.b64->ncmds)
 	{
 		if (remaining < sizeof(*current))
 			return (ft_mach_err_lc_past_all_cmds(n));
-		else if (current->cmdsize & (0x08 - 1))
+		else if (current->cmdsize & ((dst->is_64 ? 0x8 : 0x4) - 1))
 			return (ft_mach_err_lc_size_not_aligned(n));
 		else if (current->cmdsize < sizeof(*current))
 			return (ft_mach_err_lc_lt_8(n));

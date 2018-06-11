@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/29 12:09:54 by tvallee           #+#    #+#             */
-/*   Updated: 2018/05/29 12:14:44 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 12:28:55 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ t_bool		ft_mach_load_symtab(t_mach *dst, t_mapping map)
 				symsize))
 		return (ft_mach_err_symtab_gt_file());
 	dst->symtab.b64 = (void *)((char const *)map.addr + dst->symtab_lc->symoff);
-	if ((size_t)dst->symtab.b64 & (sizeof(void*) - 1))
-		return (ft_mach_err_symtab_not_aligned());
+	/*if ((size_t)dst->symtab.b64 & ((dst->is_64 ? 0x8 : 0x4) - 1))
+		return (ft_mach_err_symtab_not_aligned());*/
 	if (!is_large_enough(map, (char const *)map.addr + dst->symtab_lc->stroff,
 				dst->symtab_lc->strsize))
 		return (ft_mach_err_strtab_gt_file());

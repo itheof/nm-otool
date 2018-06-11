@@ -6,12 +6,13 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/28 15:43:27 by tvallee           #+#    #+#             */
-/*   Updated: 2018/05/28 17:43:51 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 14:10:26 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 #include "libft/libc.h"
+#include "libft/buffer.h"
 
 static inline t_bool	match(struct section_64 const *ptr, char const *seg,
 		char const *sect)
@@ -56,22 +57,41 @@ static char		get_letter(t_mach *obj, uint8_t n_type, uint8_t n_sect,
 	return ('?');
 }
 
+void	buffer_cat_value(t_buffer *buf, size_t value, int padding, char padc)
+{
+	const char	arr[] = "0123456789abcdef";
+
+	if (padding)
+	{
+		buffer_cat_value(buf, value >> 4, padding - 1, padc);
+		if (value)
+			buffer_ncat(buf, arr + (value & 0xF), 1);
+		else
+			buffer_ncat(buf, &padc, 1);
+	}
+}
+
 void		entry_output(t_mach *obj, struct nlist_64 const *n)
 {
-	if (obj->is_64)
+	size_t	value;
+	int		padding;
+	char	letter;
+	t_buffer	buf;
+
+	padding = (obj->is_64) ? 16 : 8;
+	value = (obj->is_64) ? n->n_value : ((struct nlist const *)n)->n_value;
+	letter = get_letter(obj, n->n_type, n->n_sect, value == 0);
+	if (n->n_un.n_strx != 0 && !(n->n_type & N_STAB) && buffer_init(&buf)) // filter debug syms
 	{
-		if (n->n_un.n_strx != 0 && !(n->n_type & N_STAB)) // filter debug syms
-		{
-			if (n->n_value)
-				printf("%.16zx %c %s\n", n->n_value,
-						get_letter(obj, n->n_type, n->n_sect, n->n_value == 0),
-						ft_mach_get_string_by_symbol(obj, n));
-			else
-				printf("%16c %c %s\n", ' ',
-						get_letter(obj, n->n_type, n->n_sect, n->n_value == 0),
-						ft_mach_get_string_by_symbol(obj, n));
-		}
+		if (letter != 'U' && letter != 'u')
+			buffer_cat_value(&buf, value, padding, '0');
+		else
+			buffer_cat_value(&buf, 0, padding, ' ');
+		buffer_cat(&buf, " ");
+		buffer_ncat(&buf, &letter, 1);
+		buffer_cat(&buf, " ");
+		buffer_cat(&buf, ft_mach_get_string_by_symbol(obj, n)); //XXX check null returns
+		ft_putendl(buf.str);
+		buffer_deinit(&buf);
 	}
-	else
-		;//TODO
 }

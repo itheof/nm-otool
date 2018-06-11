@@ -36,8 +36,8 @@ static t_bool	ft_mach_load(t_mach *dst, t_mapping map)
 
 static t_bool	ft_mach_register_mach_hdr(t_mach *dst, t_mapping map)
 {
-	dst->header = map.addr;
-	if (!is_large_enough(map, dst->header + 1, dst->header->sizeofcmds))
+	dst->header.b64 = map.addr;
+	if (!is_large_enough(map, dst->header.b64 + 1, dst->header.b64->sizeofcmds))
 		return (ft_mach_err_sizeofcmds_lt_file());
 	return (true);
 }
@@ -47,9 +47,9 @@ t_bool			ft_mach_init(t_mach *dst, t_mapping map, t_file type)
 	int i;
 
 	i = 0;
+	dst->is_64 = (type == E_FILE_MACH_O_64);
 	if (!ft_mach_register_mach_hdr(dst, map))
 		return (false);
-	dst->is_64 = (type == E_FILE_MACH_O_64);
 	while (i < MAX_SECT)
 		dst->sections[i++].b64 = NULL;
 	dst->symtab_lc = NULL;
@@ -57,5 +57,6 @@ t_bool			ft_mach_init(t_mach *dst, t_mapping map, t_file type)
 		return (false);
 	if (!ft_mach_load(dst, map))
 		return (false);
+	//TODO: Urgent check sections size so that we can display them easily in otool
 	return (true);
 }

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/05/29 15:05:06 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 14:49:21 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct					s_out
 	const char					*path;
 	const char					*arch_name;
 	const char					*ar_name;
+	t_bool						multifile;
 }								t_out;
 
 typedef struct					s_ar_obj
@@ -86,7 +87,11 @@ typedef struct					s_ar_obj
 typedef struct					s_mach
 {
 	t_bool						is_64;
-	struct mach_header_64 const	*header;
+	union						s_headers
+	{
+		struct mach_header_64 const	*b64;
+		struct mach_header const	*b32;
+	}							header;
 	struct load_command	const	*lc_start;
 	struct symtab_command const	*symtab_lc;
 
@@ -126,7 +131,8 @@ t_file							ft_fat_is_fat(t_mapping map);
 ** AR
 */
 
-t_bool							ar_iter(t_mapping ar);
+t_bool	ar_iter(t_mapping ar, t_out out, t_list *arch,
+		t_bool (*f)(t_mapping map, t_out out, t_list *arch));
 t_file							ft_ar_is_ar(t_mapping map);
 
 /*

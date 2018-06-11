@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:41:07 by tvallee           #+#    #+#             */
-/*   Updated: 2018/04/26 10:46:17 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 13:39:32 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,10 @@ static struct ar_hdr const	*ar_get_next_header(t_mapping ar,
 static void	obj_dump(t_mapping obj)
 {
 	if (obj.size > 0)
-		ft_hexdump(obj.addr, obj.size);
+	{
+		//ft_hexdump(obj.addr, obj.size);
+		write(2, obj.addr, obj.size);
+	}
 }
 
 t_file	ft_ar_is_ar(t_mapping map)
@@ -98,7 +101,8 @@ t_file	ft_ar_is_ar(t_mapping map)
 	return (E_FILE_INVALID);
 }
 
-t_bool	ar_iter(t_mapping ar)
+t_bool	ar_iter(t_mapping ar, t_out out, t_list *arch,
+		t_bool (*f)(t_mapping map, t_out out, t_list *arch))
 {
 	struct ar_hdr const	*current;
 	t_ar_obj			obj;
@@ -113,7 +117,9 @@ t_bool	ar_iter(t_mapping ar)
 		if (!is_large_enough(ar, current + 1, obj.size + obj.padding))
 			return (ar_err_too_small_for_object(obj));
 
-		obj_dump(obj.data);
+		out.ar_name = ft_strndup(obj.name, obj.name_len);
+		f(obj.data, out, arch);
+		free((void*)out.ar_name);
 		current = ar_get_next_header(ar, current, obj);
 	}
 	return (true);
