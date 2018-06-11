@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/08 16:53:43 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/06 12:38:00 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 17:50:40 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,5 +50,9 @@ void	fat_deinit(t_list *lst)
 
 t_file	ft_fat_is_fat(t_mapping map)
 {
+	if (is_large_enough(map, map.addr, sizeof(t_magic)) &&
+			(*(t_magic*)map.addr == FAT_CIGAM ||
+			*(t_magic*)map.addr == FAT_CIGAM_64))
+		return (true);
 	return (E_FILE_INVALID);
 }

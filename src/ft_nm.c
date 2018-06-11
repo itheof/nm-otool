@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 15:40:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/06/11 14:49:38 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 17:00:07 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ static t_bool	ft_nm_switch_file_type(t_mapping map, t_out out, t_env env)
 	addr = map.addr;
 	type = get_file_type(map);
 	if (type == E_FILE_FAT)
-		return (nm_fat_wrap(map, out, env));
+		return (nm_fat_wrap(map, out, env.archs));
 	else if (type == E_FILE_FAT_64)
-		return (nm_fat64_wrap(map, out, env));
+		return (nm_fat64_wrap(map, out, env.archs));
 	else if (type == E_FILE_AR)
 		return (nm_ar_wrap(map, out, env.archs));
 	else if (type == E_FILE_MACH_O)
@@ -34,7 +34,10 @@ static t_bool	ft_nm_switch_file_type(t_mapping map, t_out out, t_env env)
 	else if (type == E_FILE_MACH_O_64)
 		return (nm_mach64_wrap(map, out, env.archs));
 	else
+	{
+		ft_puterr(NULL, ERR_INVALID);
 		return (false);
+	}
 }
 
 static t_bool	ft_nm_file_wrap(const char *path, t_env env, t_bool show_path)
@@ -52,7 +55,6 @@ static t_bool	ft_nm_file_wrap(const char *path, t_env env, t_bool show_path)
 		if (!success)
 		{
 			ft_putchar_fd('\n', 2);
-			ft_puterr(NULL, ERR_INVALID);
 		}
 	}
 	else

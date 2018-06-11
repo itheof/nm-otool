@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/02 19:48:48 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/06 12:30:27 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 16:35:59 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ typedef struct	s_env
 	t_list		*archs;
 }				t_env;
 
-t_bool			nm_fat_wrap(t_mapping map, t_out out, t_env env);
-t_bool			nm_fat64_wrap(t_mapping map, t_out out, t_env env);
+t_bool			nm_fat_wrap(t_mapping map, t_out out, t_list *arch);
+t_bool			nm_fat64_wrap(t_mapping map, t_out out, t_list *arch);
 t_bool			nm_ar_wrap(t_mapping map, t_out out, t_list *arch);
 t_bool			nm_mach_wrap(t_mapping map, t_out out, t_list *arch);
 t_bool			nm_mach64_wrap(t_mapping map, t_out out, t_list *arch);

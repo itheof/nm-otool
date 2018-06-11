@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/21 16:16:55 by tvallee           #+#    #+#             */
-/*   Updated: 2018/06/11 13:35:30 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 16:56:38 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,6 @@
 #include "libft/print.h"
 #include "libft/libc.h"
 #include "libft/buffer.h"
-
-static void	print_out(t_out out)
-{
-	t_buffer	buf;
-
-	if (out.multifile || out.ar_name || out.arch_name)
-	{
-		if (buffer_init(&buf))
-		{
-			buffer_cat(&buf, "\n");
-			buffer_cat(&buf, out.path);
-			if (out.ar_name)
-			{
-				buffer_cat(&buf, "(");
-				buffer_cat(&buf, out.ar_name);
-				buffer_cat(&buf, ")");
-			}
-			buffer_cat(&buf, ":");
-			ft_putendl(buf.str);
-			buffer_deinit(&buf);
-		}
-	}
-}
 
 static void	sort_entries(t_mach *obj, struct nlist_64 const **arr)
 {
@@ -99,7 +76,7 @@ t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 		}
 		arr[i] = NULL;
 		sort_entries(&obj, arr);
-		print_out(out);
+		ft_putout(out);
 		print_entries(&obj, arr);
 		free(arr);
 	}
@@ -129,7 +106,7 @@ t_bool	nm_mach_wrap(t_mapping map, t_out out, t_list *arch)
 		}
 		arr[i] = NULL;
 		sort_entries(&obj, arr);
-		print_out(out);
+		ft_putout(out);
 		print_entries(&obj, arr);
 		free(arr);
 	}

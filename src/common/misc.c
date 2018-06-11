@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/29 13:50:26 by tvallee           #+#    #+#             */
-/*   Updated: 2018/02/26 10:24:31 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 17:02:57 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,27 +21,28 @@ void	ft_putout(t_out out)
 {
 	t_buffer	buf;
 
-	if (buffer_init(&buf))
+	if (out.multifile || out.arch_name || out.ar_name)
 	{
-		if (out.path || out.arch_name || out.ar_name)
+		if (buffer_init(&buf))
 		{
+			buffer_cat(&buf, "\n");
 			buffer_cat(&buf, out.path);
+			if (out.ar_name)
+			{
+				buffer_cat(&buf, "(");
+				buffer_cat(&buf, out.ar_name);
+				buffer_cat(&buf, ")");
+			}
+			if (out.arch_name)
+			{
+				buffer_cat(&buf, " for architechture (");
+				buffer_cat(&buf, out.arch_name);
+				buffer_cat(&buf, ")");
+			}
+			buffer_cat(&buf, ":\n");
+			ft_putstr(buf.str);
+			buffer_deinit(&buf);
 		}
-		if (out.ar_name)
-		{
-			buffer_cat(&buf, "(");
-			buffer_cat(&buf, out.ar_name);
-			buffer_cat(&buf, ")");
-		}
-		if (out.arch_name)
-		{
-			buffer_cat(&buf, " for architechture (");
-			buffer_cat(&buf, out.arch_name);
-			buffer_cat(&buf, ")");
-		}
-		buffer_cat(&buf, ":\n");
-		ft_putstr(buf.str);
-		buffer_deinit(&buf);
 	}
 }
 
@@ -83,9 +84,11 @@ void	ft_puterr(char const *prefix, char const *msg)
 	}
 }
 
+/*
 void	print_path(char const *path)
 {
 	ft_putchar(10);
 	ft_putstr(path);
 	ft_putendl(":");
 }
+*/

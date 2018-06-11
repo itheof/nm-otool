@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/06/11 14:49:21 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/11 18:05:12 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,6 @@ typedef enum					e_file
 	E_FILE_MACH_O_64,
 }								t_file;
 
-typedef struct					s_fat
-{
-	void						*addr;
-	NXArchInfo const			*info;
-}								t_fat;
-
 typedef enum					e_err
 {
 	E_ERR_NONE = 0,
@@ -73,6 +67,13 @@ typedef struct					s_out
 	const char					*ar_name;
 	t_bool						multifile;
 }								t_out;
+
+typedef struct					s_fat
+{
+	t_bool						is_64;
+	void						*addr;
+	NXArchInfo const			*info;
+}								t_fat;
 
 typedef struct					s_ar_obj
 {
@@ -142,6 +143,9 @@ t_file							ft_ar_is_ar(t_mapping map);
 t_bool							ft_mach_init(t_mach *dst, t_mapping map,
 		t_file type);
 t_file							ft_mach_is_mach_o(t_mapping map);
+char const						*ft_mach_get_string_by_symbol(t_mach *dst,
+		struct nlist_64 const *n);
+
 
 /*
 ** debug
@@ -167,8 +171,5 @@ t_err							arch_push_arg(t_list **lsth, char const *arg);
 void							arch_deinit(t_list *archs);
 t_bool							arch_fatal_err(char const *name, t_list *archs,
 		char const *arg, t_err err);
-
-char const						*ft_mach_get_string_by_symbol(t_mach *dst,
-		struct nlist_64 const *n);
 
 #endif
