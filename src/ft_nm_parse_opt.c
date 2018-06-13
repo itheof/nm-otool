@@ -44,7 +44,7 @@ static t_bool	usage(char const *name, char option)
 
 static t_bool	is_opt_delimiter(char const *arg)
 {
-	return (ft_strcmp("-arch", arg) == 0);
+	return (ft_strcmp("--", arg) == 0);
 }
 
 static t_bool	is_opt(char const *arg)
@@ -54,11 +54,7 @@ static t_bool	is_opt(char const *arg)
 
 static t_list	*make_default_arch(void)
 {
-	t_list	buf;
-
-	buf.next = NULL;
-	buf.content = DEFAULT_ARCH;
-	return (ft_lstnew(&buf, sizeof(buf)));
+	return (ft_lstnewcopy(DEFAULT_ARCH, sizeof(void*)));
 }
 
 t_bool	nm_init_env(int *ac, char const **av[], t_env *env)

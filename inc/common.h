@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/03 17:11:56 by tvallee           #+#    #+#             */
-/*   Updated: 2018/06/11 18:05:12 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/13 18:12:06 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define DEFAULT_ARCH (void*)((char*)NULL - 1)
 # define ERR_INVALID "The file was not recognized as a valid object file"
 # define MAX_SEGMENTS 10
+# define MAX_FAT_ARCH 16
 
 typedef struct					s_mapping
 {
@@ -71,8 +72,10 @@ typedef struct					s_out
 typedef struct					s_fat
 {
 	t_bool						is_64;
-	void						*addr;
-	NXArchInfo const			*info;
+	struct fat_arch_64			arr[MAX_FAT_ARCH];
+	uint32_t					narchs;
+	t_bool						all_archs;
+	t_list						*arch;
 }								t_fat;
 
 typedef struct					s_ar_obj
@@ -114,16 +117,15 @@ typedef struct					s_mach
 
 typedef uint32_t				t_magic;
 
-typedef t_bool					(*t_arch_fun)(t_mapping map, void const *addr,
-		t_out out);
+typedef t_bool					(*t_arch_fun)(t_mapping map, t_out out,
+		t_list *arch);
 
 /*
 ** FAT
 */
 
-t_list							*fat_init(t_mapping map, t_bool all_archs,
-		t_list *archs);
-t_bool							fat_iter(t_list *lst, t_arch_fun f,
+t_bool							fat_init(t_mapping map, t_fat *obj);
+t_bool							fat_iter(t_fat *obj, t_arch_fun f,
 		t_mapping map, t_out out);
 void							fat_deinit(t_list *lst);
 t_file							ft_fat_is_fat(t_mapping map);
@@ -132,8 +134,7 @@ t_file							ft_fat_is_fat(t_mapping map);
 ** AR
 */
 
-t_bool	ar_iter(t_mapping ar, t_out out, t_list *arch,
-		t_bool (*f)(t_mapping map, t_out out, t_list *arch));
+t_bool	ar_iter(t_mapping ar, t_out out, t_list *arch, t_arch_fun f);
 t_file							ft_ar_is_ar(t_mapping map);
 
 /*

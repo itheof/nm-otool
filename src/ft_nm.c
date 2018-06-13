@@ -24,9 +24,9 @@ static t_bool	ft_nm_switch_file_type(t_mapping map, t_out out, t_env env)
 	addr = map.addr;
 	type = get_file_type(map);
 	if (type == E_FILE_FAT)
-		return (nm_fat_wrap(map, out, env.archs));
+		return (nm_fat_wrap(map, out, env.archs, env.all_archs));
 	else if (type == E_FILE_FAT_64)
-		return (nm_fat64_wrap(map, out, env.archs));
+		return (nm_fat64_wrap(map, out, env.archs, env.all_archs));
 	else if (type == E_FILE_AR)
 		return (nm_ar_wrap(map, out, env.archs));
 	else if (type == E_FILE_MACH_O)

@@ -12,7 +12,7 @@
 
 #include "ft_nm.h"
 
-static t_bool	nm_test(t_mapping map, t_out out, t_list *arch)
+static t_bool	nm_handle_ar_obj(t_mapping map, t_out out, t_list *arch)
 {
 	t_file	type;
 
@@ -26,5 +26,5 @@ static t_bool	nm_test(t_mapping map, t_out out, t_list *arch)
 
 t_bool			nm_ar_wrap(t_mapping map, t_out out, t_list *arch)
 {
-	return (ar_iter(map, out, arch, &nm_test));
+	return (ar_iter(map, out, arch, &nm_handle_ar_obj));
 }

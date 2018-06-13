@@ -15,8 +15,7 @@
 #include "libft/swap.h"
 #include "common.h"
 
-/*
-static t_bool			fat_check_header(t_mapping map, uint32_t *narch)
+static t_bool			fat_check_header(t_mapping map, uint32_t *narch, t_bool is_64)
 {
 	struct fat_header const	*fat;
 	t_buffer				err;
@@ -26,9 +25,12 @@ static t_bool			fat_check_header(t_mapping map, uint32_t *narch)
 	*narch = swap_long(fat->nfat_arch);
 	if (*narch == 0)
 		buffer_cat(&err, " (contains zero architecture types)");
-	else if (!is_large_enough(map, fat + 1, sizeof(struct fat_arch) * *narch))
+	else if (!is_large_enough(map, fat + 1,
+				(is_64 ? sizeof(struct fat_arch_64) : sizeof(struct fat_arch) * *narch)))
 		buffer_cat(&err, " (fat_arch structs would extend"
 				" past the end of the file)");
+	else if (*narch > MAX_FAT_ARCH)
+		buffer_cat(&err, " (too many fat_arch structs for this build)");
 	else
 	{
 		buffer_deinit(&err);
@@ -38,32 +40,6 @@ static t_bool			fat_check_header(t_mapping map, uint32_t *narch)
 		ft_puterr(NULL, err.str);
 	buffer_deinit(&err);
 	return (false);
-}
-
-static struct fat_arch	*fat_to_host_byte_order(t_mapping map, uint32_t narchs)
-{
-	struct fat_arch	*dest;
-	struct fat_arch	*old;
-	struct fat_arch *new;
-	uint32_t		i;
-
-	if ((dest = malloc(sizeof(*dest) * narchs)) == NULL)
-		return (dest);
-	i = 0;
-	old = (struct fat_arch *)((char*)map.addr + sizeof(struct fat_header));
-	new = dest;
-	while (i < narchs)
-	{
-		new->cputype = swap_long(old->cputype);
-		new->cpusubtype = swap_long(old->cpusubtype);
-		new->offset = swap_long(old->offset);
-		new->size = swap_long(old->size);
-		new->align = swap_long(old->align);
-		old++;
-		new++;
-		i++;
-	}
-	return (dest);
 }
 
 static t_bool			fat_check_archs(t_mapping map, struct fat_arch *endian,
@@ -94,105 +70,65 @@ static t_bool			fat_check_archs(t_mapping map, struct fat_arch *endian,
 	return (true);
 }
 
-
-static t_err			fat_list_push(t_list **lst, struct fat_arch *addr,
-		struct NXArchInfo const *info)
+static void fat_register_arch(struct fat_arch_64 *dst, void const *addr,
+		uint32_t i, t_bool is_64)
 {
-	t_list	*current;
+	struct fat_arch_64 const	*p1;
+	struct fat_arch const		*p2;
 
-	current = *lst;
-	while (current != NULL)
+	addr = (const char *)addr + sizeof(struct fat_header);
+	if (is_64)
 	{
-		if (((t_fat*)current->content)->info.)
-	}
-}
-
-
-static t_list			*fat_list_all(void const *addr, struct fat_arch *addr, uint32_t narchs)
-{
-	t_list	*lst;
-
-	while (narchs--)
-	{
-		fat_push_link(&lst, addr, );
-		addr++;
-	}
-	return (lst);
-}
-
-static t_list			*fat_list(void const *addr, struct fat_arch *addr, uint32_t narchs)
-{
-	ft_puterr(NULL, "Not implemented yet");
-	return (NULL);
-}
-
-
-
-static void const		*fat_get_addr(void const *start, struct fat_arch const *fat)
-{
-	return ((char const *)start + fat->offset);
-}*/
-
-
-/*
-static t_list			*fat_list_default(void const * addr, struct fat_arch *archs,
-		uint32_t narchs)
-{
-	t_list	*new;
-	t_fat	tmp;
-
-	new = NULL;
-	if (narchs == 1)
-	{
-		tmp.info = NULL;
-		tmp.addr = fat_get_addr(addr, arch);
-		ft_lstnew();
+		p1 = (struct fat_arch_64 const*)((char const *)addr + i
+				* sizeof(struct fat_arch_64));
+		dst->cputype = swap_long(p1->cputype);
+		dst->cpusubtype = swap_long(p1->cpusubtype);
+		dst->offset = swap_longlong(p1->offset);
+		dst->size = swap_longlong(p1->size);
+		dst->align = swap_long(p1->align);
 	}
 	else
 	{
-		if (nxinfo de l arch locale trouvee dans archs)
-		{
-		}
-		else
-		{
-			nxinfos de toutes les archs trouvees dans archs
-		}
+		p2 = (struct fat_arch const*)((char const *)addr +
+				i * sizeof(struct fat_arch));
+		dst->cputype = swap_long(p2->cputype);
+		dst->cpusubtype = swap_long(p2->cpusubtype);
+		dst->offset = swap_long(p2->offset);
+		dst->size = swap_long(p2->size);
+		dst->align = swap_long(p2->align);	
 	}
 }
-*/
-/*
-** performs most checks including fat_arch offsets and sizes.
-** returns a list of t_fat *
-*/
 
-t_list					*fat_init(t_mapping map, t_bool all_archs,
-		t_fat *obj)
+static t_bool			fat_parse_arch(t_mapping map, t_fat *obj, uint32_t i)
 {
-	t_list			*lst;
-	struct fat_arch	*endian;
-	uint32_t		narchs;
-
-	if (is_large_enough(map, map.addr, sizeof(struct fat_header)))
+	fat_register_arch(obj->arr + i, map.addr, i, obj->is_64);
+	if (!is_large_enough(map, (char const *)map.addr + obj->arr[i].offset,
+				obj->arr[i].size))
 	{
-		lst = NULL;
-		if (fat_check_header(map, &narchs) &&
-				(endian = fat_to_host_byte_order(map, narchs)) != NULL)
-		{
-			if (fat_check_archs(map, endian, narchs))
-			{
-				if (req_archs)
-				if (all_archs)
-					lst = NULL;//fat_list_all(map.addr, endian, narchs);
-				else if (req_archs != DEFAULT_ARCH)
-					lst = NULL;//fat_list(map.addr, endian, narchs, req_archs);
-				else
-					lst = fat_list_default(map.addr, endian, narchs);
-			}
-			free(endian);
-		}
-		return (lst);
+		ft_puterr(NULL, " truncated or malformed fat file"
+				" (fat object extends past the end of the file)");
+		return (false);
 	}
-	else
+	return (true);
+}
+
+t_bool					fat_init(t_mapping map, t_fat *obj)
+{
+	uint32_t		i;
+
+	if (!is_large_enough(map, map.addr, sizeof(struct fat_header)))
+	{
 		ft_puterr(NULL, ERR_INVALID);
-	return (NULL);
+		return (false);
+	}
+	if (!fat_check_header(map, &(obj->narchs), obj->is_64))
+	   return (false);
+	i = 0;
+	while (i < obj->narchs)
+	{
+		if (!fat_parse_arch(map, obj, i))
+			return (false);
+		i++;
+	}
+	return (true);
 }

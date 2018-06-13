@@ -22,7 +22,7 @@ t_bool		ft_mach_register_symtab(t_mach *dst,
 }
 
 /*
-** v returns NULL if not enough space
+** v returns "" if not enough space
 */
 
 char const	*ft_mach_get_string_by_symbol(t_mach *dst, struct nlist_64 const *n)
@@ -31,10 +31,10 @@ char const	*ft_mach_get_string_by_symbol(t_mach *dst, struct nlist_64 const *n)
 	char const	*delim;
 
 	if (n->n_un.n_strx > dst->symtab_lc->strsize)
-		return (NULL);
+		return ("");
 	ret = dst->strtab + n->n_un.n_strx;
 	if (ret < dst->strtab)
-		return (NULL);
+		return ("");
 	delim = dst->strtab + dst->symtab_lc->strsize;
 	while (delim != dst->strtab)
 	{
@@ -42,7 +42,7 @@ char const	*ft_mach_get_string_by_symbol(t_mach *dst, struct nlist_64 const *n)
 			return (ret);
 		delim--;
 	}
-	return (NULL);
+	return ("");
 }
 
 /*

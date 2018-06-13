@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/20 09:41:34 by tvallee           #+#    #+#             */
-/*   Updated: 2018/03/05 17:05:12 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/13 18:29:41 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,13 @@ void	arch_deinit(t_list *archs)
 {
 	t_list *next;
 
-	if (archs == NULL || archs->content == DEFAULT_ARCH)
+	if (archs == NULL)
+	   return ;
+	if (archs->content == DEFAULT_ARCH)
+	{
+		free(archs);
 		return ;
+	}
 	while (archs != NULL)
 	{
 		next = archs->next;
