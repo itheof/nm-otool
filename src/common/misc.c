@@ -17,6 +17,12 @@
 #include "libft/buffer.h"
 #include "common.h"
 
+t_bool	ft_perror_return_false(char const *str)
+{
+	PERROR(str);
+	return (false);
+}
+
 void	ft_putout(t_out out)
 {
 	t_buffer	buf;

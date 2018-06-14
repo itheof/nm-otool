@@ -12,15 +12,6 @@
 
 #include <unistd.h>
 
-/*
-static void	usage(const char *name)
-{
-	ft_putstr_fd("usage: ", 2);
-	ft_putstr_fd(name, 2);
-	ft_putendl_fd(" [-t] file...", 2);
-}
-*/
-
 int			main(int ac, char const *av[])
 {
 	(void)ac;

@@ -155,6 +155,7 @@ char const						*ft_mach_get_string_by_symbol(t_mach *dst,
 void							ft_perror(char const *name);
 void							ft_puterr(char const *prefix, char const *msg);
 void							print_path(char const *path);
+t_bool							ft_perror_return_false(char const *str);
 void							ft_putout(t_out out);
 
 t_bool							map_file(const char *path, t_mapping *map,

@@ -57,7 +57,7 @@ static t_list	*make_default_arch(void)
 	return (ft_lstnewcopy(DEFAULT_ARCH, sizeof(void*)));
 }
 
-t_bool	nm_init_env(int *ac, char const **av[], t_env *env)
+t_bool			nm_init_env(int *ac, char const **av[], t_env *env)
 {
 	int		i;
 	t_err	err;
@@ -66,14 +66,13 @@ t_bool	nm_init_env(int *ac, char const **av[], t_env *env)
 	env->name = (*av)[0];
 	env->archs = NULL;
 	default_arch = true;
-
 	i = 1;
 	while (i < *ac)
 	{
 		if (is_opt_delimiter((*av)[i]))
 		{
 			i++;
-			break;
+			break ;
 		}
 		else if (ft_strcmp("-arch", (*av)[i]) == 0 && i < *ac + 1)
 		{
@@ -93,12 +92,11 @@ t_bool	nm_init_env(int *ac, char const **av[], t_env *env)
 		{
 			usage(env->name, (*av)[i][1]);
 			arch_deinit(env->archs);
-			return(false);
+			return (false);
 		}
 		else
-			break;
+			break ;
 	}
-
 	ft_puterr(env->name, NULL);
 	if (default_arch)
 	{

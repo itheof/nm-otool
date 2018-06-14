@@ -22,10 +22,31 @@ static inline t_bool	match(struct section_64 const *ptr, char const *seg,
 			!ft_strncmp(ptr->segname, seg, sizeof(ptr->segname)));
 }
 
-static char		get_letter(t_mach *obj, uint8_t n_type, uint8_t n_sect,
+/*
+** line 51 is an error case
+*/
+
+static char				get_letter2(t_mach *obj, struct section_64 const *ptr,
+		uint8_t n_sect, char lowercase)
+{
+	if (n_sect == NO_SECT)
+		return ('S' + lowercase);
+	ptr = obj->sections[n_sect - 1].b64;
+	if (ptr == NULL)
+		return ('S' + lowercase);
+	if (match(ptr, SEG_TEXT, SECT_TEXT))
+		return ('T' + lowercase);
+	if (match(ptr, SEG_DATA, SECT_DATA))
+		return ('D' + lowercase);
+	if (match(ptr, SEG_DATA, SECT_BSS))
+		return ('B' + lowercase);
+	return ('S' + lowercase);
+}
+
+static char				get_letter(t_mach *obj, uint8_t n_type, uint8_t n_sect,
 		t_bool null_value)
 {
-	char lowercase;
+	char					lowercase;
 	struct section_64 const *ptr;
 
 	lowercase = (n_type & N_EXT) ? 0 : 'a' - 'A';
@@ -39,26 +60,14 @@ static char		get_letter(t_mach *obj, uint8_t n_type, uint8_t n_sect,
 	else if ((n_type & N_TYPE) == N_ABS)
 		return ('A' + lowercase);
 	else if ((n_type & N_TYPE) == N_SECT)
-	{
-		if (n_sect == NO_SECT)
-			return ('S' + lowercase);
-		ptr = obj->sections[n_sect - 1].b64;
-		if (ptr == NULL)
-			return ('S' + lowercase); //TODO: error case
-		if (match(ptr, SEG_TEXT, SECT_TEXT))
-			return ('T' + lowercase);
-		if (match(ptr, SEG_DATA, SECT_DATA))
-			return ('D' + lowercase);
-		if (match(ptr, SEG_DATA, SECT_BSS))
-			return ('B' + lowercase);
-		return ('S' + lowercase);
-	}
+		return (get_letter2(obj, ptr, n_sect, lowercase));
 	else if ((n_type & N_TYPE) == N_INDR)
 		return ('I' + lowercase);
 	return ('?');
 }
 
-void	buffer_cat_value(t_buffer *buf, size_t value, int padding, char padc)
+void					buffer_cat_value(t_buffer *buf, size_t value,
+		int padding, char padc)
 {
 	const char	arr[] = "0123456789abcdef";
 
@@ -72,17 +81,18 @@ void	buffer_cat_value(t_buffer *buf, size_t value, int padding, char padc)
 	}
 }
 
-void		entry_output(t_mach *obj, struct nlist_64 const *n)
+void					entry_output(t_mach *obj, struct nlist_64 const *n)
 {
-	size_t	value;
-	int		padding;
-	char	letter;
+	size_t		value;
+	int			padding;
+	char		letter;
 	t_buffer	buf;
+	char const	*str;
 
 	padding = (obj->is_64) ? 16 : 8;
 	value = (obj->is_64) ? n->n_value : ((struct nlist const *)n)->n_value;
 	letter = get_letter(obj, n->n_type, n->n_sect, value == 0);
-	if (n->n_un.n_strx != 0 && !(n->n_type & N_STAB) && buffer_init(&buf)) // filter debug syms
+	if (n->n_un.n_strx != 0 && !(n->n_type & N_STAB) && buffer_init(&buf))
 	{
 		if (letter != 'U' && letter != 'u')
 			buffer_cat_value(&buf, value, padding, '0');
@@ -91,7 +101,8 @@ void		entry_output(t_mach *obj, struct nlist_64 const *n)
 		buffer_cat(&buf, " ");
 		buffer_ncat(&buf, &letter, 1);
 		buffer_cat(&buf, " ");
-		buffer_cat(&buf, ft_mach_get_string_by_symbol(obj, n)); //XXX check null returns
+		str = ft_mach_get_string_by_symbol(obj, n);
+		buffer_cat(&buf, (str ? str : "strtab error"));
 		ft_putendl(buf.str);
 		buffer_deinit(&buf);
 	}

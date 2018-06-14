@@ -15,23 +15,29 @@
 #include "libft/libc.h"
 #include "libft/buffer.h"
 
+static int	safe_strcmp(const char *s1, const char *s2)
+{
+	if (!s1 || !s2)
+		return (0);
+	return (ft_strcmp(s1, s2));
+}
+
 static void	sort_entries(t_mach *obj, struct nlist_64 const **arr)
 {
-	struct nlist_64 const *tmp;
-	uint32_t	i;
-	uint32_t	j;
-	int ret;
-	
+	struct nlist_64 const	*tmp;
+	uint32_t				i;
+	uint32_t				j;
+	int						ret;
+
 	i = 0;
 	while (arr[i])
 	{
 		j = i + 1;
 		while (arr[j])
 		{
-			//XXX: null strings
-			if ((ret = ft_strcmp(ft_mach_get_string_by_symbol(obj, arr[i]),
+			if ((ret = safe_strcmp(ft_mach_get_string_by_symbol(obj, arr[i]),
 						ft_mach_get_string_by_symbol(obj, arr[j]))) > 0 ||
-			   		(ret == 0 && arr[i]->n_value > arr[j]->n_value))
+					(ret == 0 && arr[i]->n_value > arr[j]->n_value))
 			{
 				tmp = arr[i];
 				arr[i] = arr[j];
@@ -62,7 +68,7 @@ static void	print_entries(t_mach *obj, struct nlist_64 const **arr)
 ** arch is passed in case we want to check for cputype consistency one day
 */
 
-t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
+t_bool		nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 {
 	struct nlist_64 const	**arr;
 	uint32_t				i;
@@ -74,10 +80,7 @@ t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 	if (obj.symtab_lc)
 	{
 		if (!(arr = malloc(sizeof(*arr) * (obj.symtab_lc->nsyms + 1))))
-		{
-			PERROR("malloc");
-			return false;
-		}
+			return (ft_perror_return_false("malloc"));
 		i = 0;
 		while (i < obj.symtab_lc->nsyms)
 		{
@@ -93,7 +96,7 @@ t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 	return (true);
 }
 
-t_bool	nm_mach_wrap(t_mapping map, t_out out, t_list *arch)
+t_bool		nm_mach_wrap(t_mapping map, t_out out, t_list *arch)
 {
 	struct nlist_64 const	**arr;
 	uint32_t				i;
@@ -105,10 +108,7 @@ t_bool	nm_mach_wrap(t_mapping map, t_out out, t_list *arch)
 	if (obj.symtab_lc)
 	{
 		if (!(arr = malloc(sizeof(*arr) * (obj.symtab_lc->nsyms + 1))))
-		{
-			PERROR("malloc");
-			return false;
-		}
+			return (ft_perror_return_false("malloc"));
 		i = 0;
 		while (i < obj.symtab_lc->nsyms)
 		{
