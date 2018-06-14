@@ -13,6 +13,7 @@
 #include "ft_nm.h"
 #include "libft/libc.h"
 #include "libft/buffer.h"
+#include "libft/print.h"
 
 static inline t_bool	match(struct section_64 const *ptr, char const *seg,
 		char const *sect)

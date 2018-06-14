@@ -84,15 +84,6 @@ static struct ar_hdr const	*ar_get_next_header(t_mapping ar,
 	return ((is_eof(ar, next)) ? NULL : next);
 }
 
-static void	obj_dump(t_mapping obj)
-{
-	if (obj.size > 0)
-	{
-		//ft_hexdump(obj.addr, obj.size);
-		write(2, obj.addr, obj.size);
-	}
-}
-
 t_file	ft_ar_is_ar(t_mapping map)
 {
 	if (is_large_enough(map, map.addr, SARMAG) &&

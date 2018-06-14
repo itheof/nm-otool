@@ -45,13 +45,22 @@ static void	sort_entries(t_mach *obj, struct nlist_64 const **arr)
 
 static void	print_entries(t_mach *obj, struct nlist_64 const **arr)
 {
-	for (int i = 0; i < obj->symtab_lc->nsyms; i++)
+	uint32_t	i;
+	const char	*str;
+
+	i = 0;
+	while (i < obj->symtab_lc->nsyms)
 	{
-		const char *str = ft_mach_get_string_by_symbol(obj, arr[i]);
+		str = ft_mach_get_string_by_symbol(obj, arr[i]);
 		if (str)
 			entry_output(obj, arr[i]);
+		i++;
 	}
 }
+
+/*
+** arch is passed in case we want to check for cputype consistency one day
+*/
 
 t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 {
@@ -59,6 +68,7 @@ t_bool	nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 	uint32_t				i;
 	t_mach					obj;
 
+	(void)arch;
 	if (!ft_mach_init(&obj, map, E_FILE_MACH_O_64))
 		return (false);
 	if (obj.symtab_lc)
@@ -89,6 +99,7 @@ t_bool	nm_mach_wrap(t_mapping map, t_out out, t_list *arch)
 	uint32_t				i;
 	t_mach					obj;
 
+	(void)arch;
 	if (!ft_mach_init(&obj, map, E_FILE_MACH_O))
 		return (false);
 	if (obj.symtab_lc)

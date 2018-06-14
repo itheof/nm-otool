@@ -1,5 +1,5 @@
 NAME         = ft_nm ft_otool
-CFLAGS      += -g -Wall -Wextra
+CFLAGS      += -g -Wall -Wextra -Werror
 CFLAGS      += -std=c11 -pedantic -pedantic-errors
 
 ifeq ($(DEBUG),yes)
@@ -17,10 +17,11 @@ CFLAGS  += $(TMP_CFLAGS)
 CFLAGS    += -I./inc
 
 COM_SOURCES = common/misc.c common/file.c common/fat.c common/fat_init.c \
-			  common/type.c common/arch.c common/ar.c \
-			  common/ar_err.c common/ar_tools.c ft_nm_parse_opt.c ft_nm_mach.c ft_nm_ar.c ft_nm_fat.c \
-			  common/mach_o.c common/mach_o_err.c common/is_mach_o.c  ft_nm_output.c \
-			  common/mach_o_lc.c common/mach_o_symtab.c common/mach_o_section.c common/fat_iter.c
+			  common/type.c common/arch.c common/ar.c common/ar_err.c \
+			  common/ar_tools.c ft_nm_parse_opt.c ft_nm_mach.c ft_nm_ar.c \
+			  ft_nm_fat.c common/mach_o.c common/mach_o_err.c \
+			  common/is_mach_o.c ft_nm_output.c common/mach_o_lc.c \
+			  common/mach_o_symtab.c common/mach_o_section.c common/fat_iter.c
 
 # Sources
 SRC_PATH    = src

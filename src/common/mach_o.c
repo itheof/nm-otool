@@ -12,21 +12,6 @@
 
 #include "ft_mach.h"
 
-static void		ft_mach_dump_mach_header(struct mach_header_64 const *hdr)
-{
-	dprintf(2,
-		"struct mach_header {\n"
-		"	uint32_t	magic; /* 0x%x */\n"
-		"	cpu_type_t	cputype; /* 0x%x */\n"
-		"	cpu_subtype_t	cpusubtype; /* 0x%x */\n"
-		"	uint32_t	filetype; /* 0x%x */\n"
-		"	uint32_t	ncmds; /* 0x%x */\n"
-		"	uint32_t	sizeofcmds; /* 0x%x */\n"
-		"	uint32_t	flags; /* 0x%x */\n"
-		"};", hdr->magic, hdr->cputype, hdr->cpusubtype,
-			hdr->filetype, hdr->ncmds, hdr->sizeofcmds, hdr->flags);
-}
-
 static t_bool	ft_mach_load(t_mach *dst, t_mapping map)
 {
 	if (dst->symtab_lc != NULL && !ft_mach_load_symtab(dst, map))

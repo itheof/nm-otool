@@ -19,7 +19,7 @@ static t_bool	ft_mach_check_lc_size(struct load_command const *lc,
 {
 	if (max_len < lc_target_len)
 	{
-		OBJ_ERROR("Malformed MachO file.");
+		ft_puterr(NULL, "Malformed MachO file.");
 		return (false);
 	}
 	else if (lc->cmdsize < lc_target_len)

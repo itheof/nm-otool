@@ -19,9 +19,12 @@
 
 t_file	ft_fat_is_fat(t_mapping map)
 {
-	if (is_large_enough(map, map.addr, sizeof(t_magic)) &&
-			(*(t_magic*)map.addr == FAT_CIGAM ||
-			*(t_magic*)map.addr == FAT_CIGAM_64))
-		return (true);
+	if (is_large_enough(map, map.addr, sizeof(t_magic)))
+	{
+		if (*(t_magic*)map.addr == FAT_CIGAM)
+			return (E_FILE_FAT);
+		else if (*(t_magic*)map.addr == FAT_CIGAM_64)
+			return (E_FILE_FAT_64);
+	}
 	return (E_FILE_INVALID);
 }

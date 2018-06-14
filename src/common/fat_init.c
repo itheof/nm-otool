@@ -42,34 +42,6 @@ static t_bool			fat_check_header(t_mapping map, uint32_t *narch, t_bool is_64)
 	return (false);
 }
 
-static t_bool			fat_check_archs(t_mapping map, struct fat_arch *endian,
-		uint32_t narchs)
-{
-	t_buffer	buf;
-
-	while (narchs--)
-	{
-		if (endian->offset + endian->size > map.size)
-		{
-			if (buffer_init(&buf))
-			{
-				buffer_cat(&buf, "truncated or malformed fat file"
-						" (offset plus size of cputype (");
-				buffer_cat_num(&buf, endian->cputype);
-				buffer_cat(&buf, ") cpusubtype (");
-				buffer_cat_num(&buf, endian->cpusubtype);
-				buffer_cat(&buf, ") extends past the end of the file)");
-				if (buf.str)
-					ft_puterr(NULL, buf.str);
-				buffer_deinit(&buf);
-			}
-			return (false);
-		}
-		endian++;
-	}
-	return (true);
-}
-
 static void fat_register_arch(struct fat_arch_64 *dst, void const *addr,
 		uint32_t i, t_bool is_64)
 {

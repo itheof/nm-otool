@@ -23,4 +23,7 @@ static void	usage(const char *name)
 
 int			main(int ac, char const *av[])
 {
+	(void)ac;
+	(void)av;
+	return (0);
 }

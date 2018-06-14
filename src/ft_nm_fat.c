@@ -29,7 +29,6 @@ static t_bool	nm_handle_fat_obj(t_mapping map, t_out out, t_list *arch)
 t_bool			nm_fat_wrap(t_mapping map, t_out out, t_list *arch, t_bool all_archs)
 {
 	t_fat	obj;
-	NXArchInfo	*info;
 
 	obj.is_64 = false;
 	obj.arch = arch;
