@@ -27,6 +27,10 @@ static t_bool	ft_mach_register_mach_hdr(t_mach *dst, t_mapping map)
 	return (true);
 }
 
+/*
+** TODO: Urgent check sections size so that we can display them easily in otool
+*/
+
 t_bool			ft_mach_init(t_mach *dst, t_mapping map, t_file type)
 {
 	int i;
@@ -42,6 +46,5 @@ t_bool			ft_mach_init(t_mach *dst, t_mapping map, t_file type)
 		return (false);
 	if (!ft_mach_load(dst, map))
 		return (false);
-	//TODO: Urgent check sections size so that we can display them easily in otool
 	return (true);
 }

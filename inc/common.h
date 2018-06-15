@@ -91,7 +91,7 @@ typedef struct					s_ar_obj
 typedef struct					s_mach
 {
 	t_bool						is_64;
-	union						s_headers
+	union						u_headers
 	{
 		struct mach_header_64 const	*b64;
 		struct mach_header const	*b32;
@@ -134,7 +134,8 @@ t_file							ft_fat_is_fat(t_mapping map);
 ** AR
 */
 
-t_bool	ar_iter(t_mapping ar, t_out out, t_list *arch, t_arch_fun f);
+t_bool							ar_iter(t_mapping ar, t_out out, t_list *arch,
+		t_arch_fun f);
 t_file							ft_ar_is_ar(t_mapping map);
 
 /*
@@ -147,7 +148,6 @@ t_file							ft_mach_is_mach_o(t_mapping map);
 char const						*ft_mach_get_string_by_symbol(t_mach *dst,
 		struct nlist_64 const *n);
 
-
 /*
 ** debug
 */
@@ -157,6 +157,7 @@ void							ft_puterr(char const *prefix, char const *msg);
 void							print_path(char const *path);
 t_bool							ft_perror_return_false(char const *str);
 void							ft_putout(t_out out);
+t_bool							ft_match_arch(t_mach *target, NXArchInfo *req);
 
 t_bool							map_file(const char *path, t_mapping *map,
 		const char *name);
@@ -170,7 +171,7 @@ t_file							get_file_type(t_mapping map);
 
 t_bool							arch_add_default(t_list **dst);
 t_err							arch_push_arg(t_list **lsth, char const *arg);
-void							arch_deinit(t_list *archs);
+t_bool							arch_deinit(t_list *archs);
 t_bool							arch_fatal_err(char const *name, t_list *archs,
 		char const *arg, t_err err);
 

@@ -22,6 +22,7 @@ typedef struct	s_env
 	const char	*name;
 	t_bool		all_archs;
 	t_list		*archs;
+	t_bool		default_arch;
 }				t_env;
 
 t_bool			nm_fat_wrap(t_mapping map, t_out out, t_list *arch,

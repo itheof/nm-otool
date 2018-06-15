@@ -17,7 +17,7 @@
 #include "libft/libc.h"
 #include "common.h"
 
-t_bool	arch_from_default(t_list **dst)
+t_bool			arch_from_default(t_list **dst)
 {
 	const NXArchInfo	*info;
 
@@ -46,7 +46,7 @@ static t_err	arch_create_link(t_list **dst, char const *arg)
 	return (E_ERR_NONE);
 }
 
-t_err	arch_push_arg(t_list **lsth, char const *arg)
+t_err			arch_push_arg(t_list **lsth, char const *arg)
 {
 	t_list	*current;
 
@@ -58,7 +58,7 @@ t_err	arch_push_arg(t_list **lsth, char const *arg)
 			if (!ft_strcmp(((const NXArchInfo *)current->content)->name, arg))
 				return (E_ERR_NONE);
 			if (current->next == NULL)
-				break;
+				break ;
 			current = current->next;
 		}
 		return (arch_create_link(&(current->next), arg));
@@ -67,16 +67,16 @@ t_err	arch_push_arg(t_list **lsth, char const *arg)
 		return (arch_create_link(lsth, arg));
 }
 
-void	arch_deinit(t_list *archs)
+t_bool			arch_deinit(t_list *archs)
 {
 	t_list *next;
 
 	if (archs == NULL)
-	   return ;
+		return (false);
 	if (archs->content == DEFAULT_ARCH)
 	{
 		free(archs);
-		return ;
+		return (false);
 	}
 	while (archs != NULL)
 	{
@@ -85,9 +85,10 @@ void	arch_deinit(t_list *archs)
 		free(archs);
 		archs = next;
 	}
+	return (false);
 }
 
-t_bool	arch_fatal_err(char const *name, t_list *archs, char const *arg,
+t_bool			arch_fatal_err(char const *name, t_list *archs, char const *arg,
 		t_err err)
 {
 	t_buffer	buf;

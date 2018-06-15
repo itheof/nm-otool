@@ -6,45 +6,18 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/05 14:41:07 by tvallee           #+#    #+#             */
-/*   Updated: 2018/06/11 13:39:32 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/15 16:41:59 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ar.h"
 
-//TODO: Split into several files
+/*
+** TODO: Split into several files
+*/
 
-static unsigned long long	ar_get_numeric_value(char const *str, size_t n)
-{
-	unsigned long long	ret;
-	size_t				i;
-
-	ret = 0;
-	i = 0;
-	while (ft_isdigit(str[i]) && i < n)
-	{
-		ret *= 10;
-		ret += str[i] - '0';
-		i++;
-	}
-	return (ret);
-}
-
-//TODO: Gestion d erreur si (!ft_isdigit)
-
-static unsigned long long	ar_header_size(struct ar_hdr const *header)
-{
-	return (ar_get_numeric_value(header->ar_size, AR_SIZE_SIZE));
-}
-
-//TODO: overflow unsigned long long -> size_t ?
-static size_t	ar_ext_name_length(char const *ar_name)
-{
-	return (ar_get_numeric_value(ar_name + SAR_EFMT1, AR_NAME_SIZE - SAR_EFMT1));
-}
-
-static t_bool	ar_parse_header(t_mapping ar, struct ar_hdr const *header,
-		t_ar_obj *info)
+static t_bool				ar_parse_header(t_mapping ar,
+		struct ar_hdr const *header, t_ar_obj *info)
 {
 	if (!is_large_enough(ar, header, sizeof(*header)))
 		return (ar_err_too_small_for_header(map_get_offset(ar, header)));
@@ -84,7 +57,7 @@ static struct ar_hdr const	*ar_get_next_header(t_mapping ar,
 	return ((is_eof(ar, next)) ? NULL : next);
 }
 
-t_file	ft_ar_is_ar(t_mapping map)
+t_file						ft_ar_is_ar(t_mapping map)
 {
 	if (is_large_enough(map, map.addr, SARMAG) &&
 			ft_memcmp(map.addr, ARMAG, SARMAG) == 0)
@@ -92,7 +65,7 @@ t_file	ft_ar_is_ar(t_mapping map)
 	return (E_FILE_INVALID);
 }
 
-t_bool	ar_iter(t_mapping ar, t_out out, t_list *arch,
+t_bool						ar_iter(t_mapping ar, t_out out, t_list *arch,
 		t_bool (*f)(t_mapping map, t_out out, t_list *arch))
 {
 	struct ar_hdr const	*current;
@@ -107,7 +80,6 @@ t_bool	ar_iter(t_mapping ar, t_out out, t_list *arch,
 			return (false);
 		if (!is_large_enough(ar, current + 1, obj.size + obj.padding))
 			return (ar_err_too_small_for_object(obj));
-
 		out.ar_name = ft_strndup(obj.name, obj.name_len);
 		f(obj.data, out, arch);
 		free((void*)out.ar_name);

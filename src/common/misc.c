@@ -90,11 +90,12 @@ void	ft_puterr(char const *prefix, char const *msg)
 	}
 }
 
-/*
-void	print_path(char const *path)
+t_bool	ft_match_arch(t_mach *target, NXArchInfo *req)
 {
-	ft_putchar(10);
-	ft_putstr(path);
-	ft_putendl(":");
+	if (!req)
+		return (true);
+	if (req->cputype == target->header.b64->cputype)
+		return (true);
+	ft_puterr(NULL, "No architechture specified.");
+	return (false);
 }
-*/

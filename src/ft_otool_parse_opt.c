@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_nm_parse_opt.c                                  :+:      :+:    :+:   */
+/*   ft_otool_parse_opt.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,7 +13,7 @@
 #include "libft/buffer.h"
 #include "libft/libc.h"
 #include "libft/print.h"
-#include "ft_nm.h"
+#include "ft_otool.h"
 
 static t_bool	usage(char const *name, char option)
 {
@@ -47,7 +47,8 @@ static t_bool	is_opt(char const *arg)
 	return (arg && ft_strlen(arg) > 1 && arg[0] == '-');
 }
 
-static t_bool	nm_init_env_end(t_env *env, int *ac, char const **av[], int i)
+static t_bool	otool_init_env_end(t_env *env, int *ac, char const **av[],
+		int i)
 {
 	ft_puterr(env->name, NULL);
 	if (env->default_arch)
@@ -92,7 +93,7 @@ static t_bool	process_arch_arg(t_env *env, int *ac, char const **av[], int *i)
 	return (true);
 }
 
-t_bool			nm_init_env(int *ac, char const **av[], t_env *env)
+t_bool			otool_init_env(int *ac, char const **av[], t_env *env)
 {
 	int		i;
 
@@ -118,5 +119,5 @@ t_bool			nm_init_env(int *ac, char const **av[], t_env *env)
 		else
 			break ;
 	}
-	return (nm_init_env_end(env, ac, av, i));
+	return (otool_init_env_end(env, ac, av, i));
 }

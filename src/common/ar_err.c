@@ -6,21 +6,19 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/26 10:16:04 by tvallee           #+#    #+#             */
-/*   Updated: 2018/04/26 10:36:45 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/15 16:38:03 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ar.h"
 
-t_bool	ar_err_non_digits_in_size()
-{
-//TODO: 111 (characters in size field in archive header are not all decimal numbers: 'a' for archive member header at offset 8)
-	return (false);
-}
+/*
+** TODO: 112 (long name length characters after the #1/ are not all decimal
+** numbers: 'a0' for archive member header at offset 8)
+*/
 
 t_bool	ar_err_non_digits_in_long_name(off_t offset, char const *ar_name)
 {
-//TODO: 112 (long name length characters after the #1/ are not all decimal numbers: 'a0' for archive member header at offset 8)
 	(void)offset;
 	(void)ar_name;
 	return (false);

@@ -6,7 +6,7 @@
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/26 10:30:50 by tvallee           #+#    #+#             */
-/*   Updated: 2018/04/26 10:41:58 by tvallee          ###   ########.fr       */
+/*   Updated: 2018/06/15 16:40:31 by tvallee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,16 @@
 # define SAR_EFMT1 (sizeof(AR_EFMT1) - 1)
 # define SARFMAG (sizeof(ARFMAG) - 1)
 
-t_bool	ar_err_non_digits_in_size();
-t_bool	ar_err_non_digits_in_long_name(off_t offset, char const *ar_name);
-t_bool	ar_err_too_small_for_header(off_t offset);
-t_bool	ar_err_too_small_for_object(t_ar_obj obj);
-t_bool	ar_err_too_small_for_ext_name(unsigned long long name_len);
-t_bool	ar_err_bad_terminator_chars(t_mapping ar, struct ar_hdr const *header,
-		t_ar_obj const *info);
-size_t	ar_name_length(char const *name);
+t_bool				ar_err_non_digits_in_size();
+t_bool				ar_err_non_digits_in_long_name(off_t offset,
+		char const *ar_name);
+t_bool				ar_err_too_small_for_header(off_t offset);
+t_bool				ar_err_too_small_for_object(t_ar_obj obj);
+t_bool				ar_err_too_small_for_ext_name(unsigned long long name_len);
+t_bool				ar_err_bad_terminator_chars(t_mapping ar,
+		struct ar_hdr const *header, t_ar_obj const *info);
+size_t				ar_name_length(char const *name);
+size_t				ar_ext_name_length(char const *ar_name);
+unsigned long long	ar_header_size(struct ar_hdr const *header);
 
 #endif

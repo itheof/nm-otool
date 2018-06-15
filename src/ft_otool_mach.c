@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_nm_mach.c                                       :+:      :+:    :+:   */
+/*   ft_otool_mach.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_nm.h"
+#include "ft_otool.h"
 #include "libft/print.h"
 #include "libft/libc.h"
 #include "libft/buffer.h"
@@ -59,7 +59,7 @@ static void	print_entries(t_mach *obj, struct nlist_64 const **arr)
 	{
 		str = ft_mach_get_string_by_symbol(obj, arr[i]);
 		if (str)
-			entry_output(obj, arr[i]);
+			;//entry_output(obj, arr[i]);
 		i++;
 	}
 }
@@ -68,7 +68,7 @@ static void	print_entries(t_mach *obj, struct nlist_64 const **arr)
 ** arch is passed in case we want to check for cputype consistency one day
 */
 
-t_bool		nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
+t_bool		otool_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 {
 	struct nlist_64 const	**arr;
 	uint32_t				i;
@@ -96,7 +96,7 @@ t_bool		nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 	return (true);
 }
 
-t_bool		nm_mach_wrap(t_mapping map, t_out out, t_list *arch)
+t_bool		otool_mach_wrap(t_mapping map, t_out out, t_list *arch)
 {
 	struct nlist_64 const	**arr;
 	uint32_t				i;

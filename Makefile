@@ -21,7 +21,9 @@ COM_SOURCES = common/misc.c common/file.c common/fat.c common/fat_init.c \
 			  common/ar_tools.c ft_nm_parse_opt.c ft_nm_mach.c ft_nm_ar.c \
 			  ft_nm_fat.c common/mach_o.c common/mach_o_err.c \
 			  common/is_mach_o.c ft_nm_output.c common/mach_o_lc.c \
-			  common/mach_o_symtab.c common/mach_o_section.c common/fat_iter.c
+			  common/mach_o_symtab.c common/mach_o_section.c common/fat_iter.c \
+			  common/mach_o_err2.c common/ar_err2.c common/file2.c \
+			  ft_otool_ar.c ft_otool_fat.c ft_otool_mach.c ft_otool_parse_opt.c
 
 # Sources
 SRC_PATH    = src

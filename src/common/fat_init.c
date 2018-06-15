@@ -15,7 +15,7 @@
 #include "libft/swap.h"
 #include "common.h"
 
-static t_bool			fat_check_header(t_mapping map, uint32_t *narch, t_bool is_64)
+static t_bool	fat_check_header(t_mapping map, uint32_t *narch, t_bool is_64)
 {
 	struct fat_header const	*fat;
 	t_buffer				err;
@@ -26,7 +26,8 @@ static t_bool			fat_check_header(t_mapping map, uint32_t *narch, t_bool is_64)
 	if (*narch == 0)
 		buffer_cat(&err, " (contains zero architecture types)");
 	else if (!is_large_enough(map, fat + 1,
-				(is_64 ? sizeof(struct fat_arch_64) : sizeof(struct fat_arch) * *narch)))
+				(is_64 ? sizeof(struct fat_arch_64) :
+				sizeof(struct fat_arch) * *narch)))
 		buffer_cat(&err, " (fat_arch structs would extend"
 				" past the end of the file)");
 	else if (*narch > MAX_FAT_ARCH)
@@ -42,7 +43,7 @@ static t_bool			fat_check_header(t_mapping map, uint32_t *narch, t_bool is_64)
 	return (false);
 }
 
-static void fat_register_arch(struct fat_arch_64 *dst, void const *addr,
+static void		fat_register_arch(struct fat_arch_64 *dst, void const *addr,
 		uint32_t i, t_bool is_64)
 {
 	struct fat_arch_64 const	*p1;
@@ -67,11 +68,11 @@ static void fat_register_arch(struct fat_arch_64 *dst, void const *addr,
 		dst->cpusubtype = swap_long(p2->cpusubtype);
 		dst->offset = swap_long(p2->offset);
 		dst->size = swap_long(p2->size);
-		dst->align = swap_long(p2->align);	
+		dst->align = swap_long(p2->align);
 	}
 }
 
-static t_bool			fat_parse_arch(t_mapping map, t_fat *obj, uint32_t i)
+static t_bool	fat_parse_arch(t_mapping map, t_fat *obj, uint32_t i)
 {
 	fat_register_arch(obj->arr + i, map.addr, i, obj->is_64);
 	if (!is_large_enough(map, (char const *)map.addr + obj->arr[i].offset,
@@ -84,7 +85,7 @@ static t_bool			fat_parse_arch(t_mapping map, t_fat *obj, uint32_t i)
 	return (true);
 }
 
-t_bool					fat_init(t_mapping map, t_fat *obj)
+t_bool			fat_init(t_mapping map, t_fat *obj)
 {
 	uint32_t		i;
 
@@ -94,7 +95,7 @@ t_bool					fat_init(t_mapping map, t_fat *obj)
 		return (false);
 	}
 	if (!fat_check_header(map, &(obj->narchs), obj->is_64))
-	   return (false);
+		return (false);
 	i = 0;
 	while (i < obj->narchs)
 	{

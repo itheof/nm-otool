@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include <mach-o/fat.h>
 #include <mach-o/loader.h>
 #include <stdlib.h>
@@ -18,7 +17,7 @@
 #include "libft/swap.h"
 #include "common.h"
 
-t_bool	no_arch(NXArchInfo const *info)
+t_bool				no_arch(NXArchInfo const *info)
 {
 	t_buffer	buf;
 
@@ -44,12 +43,13 @@ static t_mapping	make_mapping(t_mapping map, struct fat_arch_64 *target)
 	return (sub);
 }
 
-static t_bool iter_all_required_archs(t_fat *obj, t_arch_fun f, t_mapping map, t_out out)
+static t_bool		iter_all_required_archs(t_fat *obj, t_arch_fun f,
+		t_mapping map, t_out out)
 {
-	t_list	*current;
-	t_bool	success;
+	t_list				*current;
+	t_bool				success;
 	struct fat_arch_64	*target;
-	NXArchInfo const *info;
+	NXArchInfo const	*info;
 
 	current = obj->arch;
 	success = true;
@@ -57,7 +57,9 @@ static t_bool iter_all_required_archs(t_fat *obj, t_arch_fun f, t_mapping map, t
 	{
 		info = current->content;
 		if (!(target = NXFindBestFatArch_64(info->cputype, info->cpusubtype,
-						obj->arr, obj->narchs)))
+						obj->arr, obj->narchs)) ||
+				target->cputype != info->cputype ||
+				target->cpusubtype != info->cpusubtype)
 			success = no_arch(info);
 		else
 		{
@@ -69,7 +71,8 @@ static t_bool iter_all_required_archs(t_fat *obj, t_arch_fun f, t_mapping map, t
 	return (success);
 }
 
-static t_bool iter_all_archs(t_fat *obj, t_arch_fun f, t_mapping map, t_out out)
+static t_bool		iter_all_archs(t_fat *obj, t_arch_fun f, t_mapping map,
+		t_out out)
 {
 	t_bool				success;
 	uint32_t			i;
@@ -96,7 +99,7 @@ static t_bool iter_all_archs(t_fat *obj, t_arch_fun f, t_mapping map, t_out out)
 	return (success);
 }
 
-t_bool	fat_iter(t_fat *obj, t_arch_fun f, t_mapping map, t_out out)
+t_bool				fat_iter(t_fat *obj, t_arch_fun f, t_mapping map, t_out out)
 {
 	NXArchInfo const	*tmp;
 	struct fat_arch_64	*target;
@@ -112,7 +115,6 @@ t_bool	fat_iter(t_fat *obj, t_arch_fun f, t_mapping map, t_out out)
 				success = f(make_mapping(map, target), out, obj->arch);
 			else
 				success = iter_all_archs(obj, f, map, out);
-
 		}
 		else
 		{
