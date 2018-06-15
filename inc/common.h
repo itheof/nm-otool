@@ -21,6 +21,7 @@
 # include <sys/types.h>
 # include "libft/stdbool.h"
 # include "libft/list.h"
+# include "libft/buffer.h"
 
 # ifdef NOT_CORRECTION
 #  include <stdio.h>
@@ -156,9 +157,11 @@ void							ft_perror(char const *name);
 void							ft_puterr(char const *prefix, char const *msg);
 void							print_path(char const *path);
 t_bool							ft_perror_return_false(char const *str);
-void							ft_putout(t_out out);
+void							ft_putout(t_out out, t_bool newline, t_bool nm);
 t_bool							ft_match_arch(t_mach *target, NXArchInfo *req);
 
+void							buffer_cat_value(t_buffer *buf, size_t value,
+		int padding, char padc);
 t_bool							map_file(const char *path, t_mapping *map,
 		const char *name);
 void							unmap_file(t_mapping *map);

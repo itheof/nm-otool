@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_otool_H
-# define FT_otool_H
+#ifndef FT_OTOOL_H
+# define FT_OTOOL_H
 
 # include "common.h"
 # include "libft/list.h"

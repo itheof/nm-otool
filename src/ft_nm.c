@@ -36,6 +36,7 @@ static t_bool	ft_nm_switch_file_type(t_mapping map, t_out out, t_env env)
 	else
 	{
 		ft_puterr(NULL, ERR_INVALID);
+		ft_putchar_fd('\n', 2);
 		return (false);
 	}
 }
@@ -52,10 +53,6 @@ static t_bool	ft_nm_file_wrap(const char *path, t_env env, t_bool show_path)
 		out.path = map.path;
 		out.multifile = show_path;
 		success = ft_nm_switch_file_type(map, out, env);
-		if (!success)
-		{
-			ft_putchar_fd('\n', 2);
-		}
 	}
 	else
 		success = false;

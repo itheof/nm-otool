@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_otool.c                                            :+:      :+:    :+:   */
+/*   ft_otool.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tvallee <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -36,6 +36,7 @@ static t_bool	ft_otool_switch_file_type(t_mapping map, t_out out, t_env env)
 	else
 	{
 		ft_puterr(NULL, ERR_INVALID);
+		ft_putchar_fd('\n', 2);
 		return (false);
 	}
 }
@@ -53,14 +54,10 @@ static t_bool	ft_otool_file_wrap(const char *path, t_env env,
 		out.path = map.path;
 		out.multifile = show_path;
 		success = ft_otool_switch_file_type(map, out, env);
-		if (!success)
-		{
-			ft_putchar_fd('\n', 2);
-		}
 	}
 	else
 		success = false;
-	uotoolap_file(&map);
+	unmap_file(&map);
 	return (success);
 }
 

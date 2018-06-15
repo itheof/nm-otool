@@ -89,7 +89,7 @@ t_bool		nm_mach64_wrap(t_mapping map, t_out out, t_list *arch)
 		}
 		arr[i] = NULL;
 		sort_entries(&obj, arr);
-		ft_putout(out);
+		ft_putout(out, true, true);
 		print_entries(&obj, arr);
 		free(arr);
 	}
@@ -117,7 +117,7 @@ t_bool		nm_mach_wrap(t_mapping map, t_out out, t_list *arch)
 		}
 		arr[i] = NULL;
 		sort_entries(&obj, arr);
-		ft_putout(out);
+		ft_putout(out, true, true);
 		print_entries(&obj, arr);
 		free(arr);
 	}

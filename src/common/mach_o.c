@@ -12,10 +12,33 @@
 
 #include "ft_mach.h"
 
+/*
+** TODO: Urgent check sections size so that we can display them easily in otool
+*/
+
 static t_bool	ft_mach_load(t_mach *dst, t_mapping map)
 {
+	int			i;
+	uint64_t	offset;
+	uint64_t	size;
+
 	if (dst->symtab_lc != NULL && !ft_mach_load_symtab(dst, map))
 		return (false);
+	i = 0;
+	while (dst->sections[i].b64 != NULL)
+	{
+		offset = (dst->is_64) ?
+			dst->sections[i].b64->offset : dst->sections[i].b32->offset;
+		size = (dst->is_64) ?
+			dst->sections[i].b32->size : dst->sections[i].b32->size;
+		if (!is_large_enough(map, (char const *)map.addr + offset, size))
+		{
+			ft_puterr(NULL, " truncated or malformed object. section would"
+					" exceed file length");
+			return (false);
+		}
+		i++;
+	}
 	return (true);
 }
 
@@ -26,10 +49,6 @@ static t_bool	ft_mach_register_mach_hdr(t_mach *dst, t_mapping map)
 		return (ft_mach_err_sizeofcmds_lt_file());
 	return (true);
 }
-
-/*
-** TODO: Urgent check sections size so that we can display them easily in otool
-*/
 
 t_bool			ft_mach_init(t_mach *dst, t_mapping map, t_file type)
 {

@@ -23,32 +23,31 @@ t_bool	ft_perror_return_false(char const *str)
 	return (false);
 }
 
-void	ft_putout(t_out out)
+void	ft_putout(t_out out, t_bool newline, t_bool nm)
 {
 	t_buffer	buf;
 
-	if (out.multifile || out.arch_name || out.ar_name)
+	if ((out.multifile || out.arch_name || out.ar_name || !nm)
+			&& buffer_init(&buf))
 	{
-		if (buffer_init(&buf))
+		buffer_cat(&buf, (newline) ? "\n" : "");
+		buffer_cat(&buf, out.path);
+		if (out.ar_name)
 		{
-			buffer_cat(&buf, "\n");
-			buffer_cat(&buf, out.path);
-			if (out.ar_name)
-			{
-				buffer_cat(&buf, "(");
-				buffer_cat(&buf, out.ar_name);
-				buffer_cat(&buf, ")");
-			}
-			if (out.arch_name)
-			{
-				buffer_cat(&buf, " for architechture (");
-				buffer_cat(&buf, out.arch_name);
-				buffer_cat(&buf, ")");
-			}
-			buffer_cat(&buf, ":\n");
-			ft_putstr(buf.str);
-			buffer_deinit(&buf);
+			buffer_cat(&buf, "(");
+			buffer_cat(&buf, out.ar_name);
+			buffer_cat(&buf, ")");
 		}
+		if (out.arch_name)
+		{
+			buffer_cat(&buf, nm ?
+					" for architechture (" : " (architecture ");
+			buffer_cat(&buf, out.arch_name);
+			buffer_cat(&buf, ")");
+		}
+		buffer_cat(&buf, ":\n");
+		ft_putstr(buf.str);
+		buffer_deinit(&buf);
 	}
 }
 
@@ -92,7 +91,7 @@ void	ft_puterr(char const *prefix, char const *msg)
 
 t_bool	ft_match_arch(t_mach *target, NXArchInfo *req)
 {
-	if (!req)
+	if (!req || req == DEFAULT_ARCH)
 		return (true);
 	if (req->cputype == target->header.b64->cputype)
 		return (true);
