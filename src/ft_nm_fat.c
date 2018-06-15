@@ -14,7 +14,8 @@
 
 static t_bool	nm_handle_fat_obj(t_mapping map, t_out out, t_list *arch)
 {
-	t_file	type;
+	t_file		type;
+	uint32_t	magic;
 
 	type = get_file_type(map);
 	if (type == E_FILE_MACH_O)
@@ -23,7 +24,20 @@ static t_bool	nm_handle_fat_obj(t_mapping map, t_out out, t_list *arch)
 		return (nm_mach64_wrap(map, out, arch));
 	else if (type == E_FILE_AR)
 		return (nm_ar_wrap(map, out, arch));
-	return (true);
+	else
+	{
+		if (is_large_enough(map, map.addr, sizeof(magic)))
+		{
+			if ((magic = *(uint32_t const *)map.addr) == MH_CIGAM ||
+					magic == MH_CIGAM_64)
+			{
+				ft_puterr(NULL, "unsupported big-endian arch in fat file");
+				return (false);
+			}
+		}
+		ft_puterr(NULL, "invalid fat object");
+		return (false);
+	}
 }
 
 t_bool			nm_fat_wrap(t_mapping map, t_out out, t_list *arch,
